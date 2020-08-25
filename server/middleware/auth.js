@@ -12,7 +12,7 @@ module.exports = function(req, res, next) {
 
   // Check if not token
   if(!token) {
-		return res.status(401).json({ errors:[{ msg: '请先完成登录！ '}] })      // @yuchen 我觉得这样的逻辑稍好一点
+		return res.json({ errors:[{ msg: '请先完成登录！ '}] })      // @yuchen 我觉得这样的逻辑稍好一点
   }
 
   try {
