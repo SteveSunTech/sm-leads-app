@@ -2,6 +2,9 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const basicUserSchema = mongoose.Schema({
+  name: {
+    type: String
+  },
   email: {
     type: String,
     required: true,
@@ -14,6 +17,9 @@ const basicUserSchema = mongoose.Schema({
   date: {
     type: Date,
     default: Date.now
+  },
+  dateDisplay: {
+    type: String
   },
   status: {
     type: Boolean,
@@ -33,7 +39,18 @@ const basicUserSchema = mongoose.Schema({
   },
   area: {
     type: String
-  }
+  },
+  wechat: [
+    {
+      wechatId: {
+        type: Schema.Types.ObjectId,
+        ref: 'WechatNew'
+      },
+      wechatDisplay: {
+        type: String
+      }
+    }
+  ]
 })
 
 module.exports = basicUser = mongoose.model('basicUser', basicUserSchema);

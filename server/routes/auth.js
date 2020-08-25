@@ -81,9 +81,11 @@ router.post(
           title
         }
       }
+      // console.log(payload)
       jwt.sign(payload, config.get('jwtSecret'), {
         expiresIn: 3600*24*30
       }, (err, token) => {
+        // console.log(token)
         if(err) throw err;
         res.json({ token, title });
       });

@@ -15,17 +15,55 @@ const amUserSchema = mongoose.Schema({
     type: Date,
     default: Date.now
   },
+  dateDisplay: {
+    type: String
+  },
   status: {
     type: Boolean,
     required: true
+  },
+  area: {
+    type: String
   },
   // title: {
   //   type: String,
   //   // required: true
   // },
-  college: {
-    type: Schema.Types.ObjectId,
-    ref: 'College'
+  college: [
+    {
+      collegeId: {
+        type: Schema.Types.ObjectId,
+        ref: 'College'
+      },
+      collegeDisplay: {
+        type: String
+      }
+    }
+  ],
+  basic: [
+    {
+      basicId: {
+        type: Schema.Types.ObjectId,
+        ref: 'basicUser'
+      },
+      basicDisplay: {
+        type: String
+      }
+    }
+  ],
+  wechat: [
+    {
+      wechatId: {
+        type: Schema.Types.ObjectId,
+        ref: 'WechatNew'
+      },
+      wechatDisplay: {
+        type: String
+      }
+    }
+  ],
+  name: {
+    type: String
   }
 })
 

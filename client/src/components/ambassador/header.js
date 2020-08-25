@@ -4,8 +4,14 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Tabs from '@material-ui/core/Tabs';
 import Tab from '@material-ui/core/Tab';
-import Typography from '@material-ui/core/Typography';
+// import Typography from '@material-ui/core/Typography';
 import Box from '@material-ui/core/Box';
+// import Paper from '@material-ui/core/Paper';
+
+import FindWechat from './findWechat'
+import Upload from './upload'
+import Dashboard from './dashboard'
+import SubAlert from '../ui/SubAlert';
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -19,8 +25,8 @@ function TabPanel(props) {
       {...other}
     >
       {value === index && (
-        <Box p={3}>
-          <Typography>{children}</Typography>
+        <Box div={3} style={{ 'padding': '20px'}}>
+          {children}
         </Box>
       )}
     </div>
@@ -58,7 +64,13 @@ export default function TabsWrappedLabel() {
   return (
     <div className={classes.root}>
       <AppBar position="static">
-        <Tabs value={value} onChange={handleChange} aria-label="wrapped label tabs example">
+        <Tabs
+          value={value}
+          onChange={handleChange}
+          aria-label="wrapped label tabs example"
+          variant="fullWidth"
+          centered
+          >
           <Tab
             value="one"
             label="微信号查重"
@@ -69,14 +81,15 @@ export default function TabsWrappedLabel() {
           <Tab value="three" label="控制台" {...a11yProps('three')} />
         </Tabs>
       </AppBar>
+      <SubAlert />
       <TabPanel value={value} index="one">
-        查重表格
+        <FindWechat />
       </TabPanel>
       <TabPanel value={value} index="two">
-        上传表格
+        <Upload />
       </TabPanel>
       <TabPanel value={value} index="three">
-        Dashboard
+        <Dashboard />
       </TabPanel>
     </div>
   );

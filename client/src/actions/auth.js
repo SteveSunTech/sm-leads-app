@@ -1,4 +1,4 @@
-import axios from '../apis/smCovered';
+import axios from 'axios';
 import { setAlert } from './alert'
 import {
   REGISTER_SUCCESS,
@@ -14,20 +14,36 @@ import setAuthToken from '../utils/setAuthToken'
 
 // Load User
 export const loadUser = () => async dispatch => {
-  if (localStorage.token) {
-    setAuthToken(localStorage.token);
-  }
+  // if (localStorage.token) {
+  //   // console.log(localStorage.token)
+  //   setAuthToken(localStorage.token);
+  // }
+
 
   try {
+    await setAuthToken(localStorage.token);
+    //axios.defaults.headers.common['x-auth-token'] = localStorage.token
+    // console.log(axios.defaults.headers.common);
+
     const res = await axios.get('/api/auth')  // @yuchen 最开始程序死在这里了; 现在改好了
 
-    console.log(res);
+    // console.log(axios.defaults.headers.common);
+
+    // const res = await axios.get('/api/auth', {headers: { Authoization}})
+
+    // console.log(res);
 
     dispatch({
       type: USER_LOADED,
       payload: res.data
     })
   } catch (err) {
+    const errors = err.response.data.errors;
+
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'warning')));
+    }
+
     dispatch({
       type: AUTH_ERROR
     })
@@ -83,7 +99,7 @@ export const login = ( email, password ) => async dispatch => {
 
     // console.log(res)
 
-    dispatch({
+    await dispatch({
       type: LOGIN_SUCCESS,
       payload: res.data
     });
@@ -91,7 +107,7 @@ export const login = ( email, password ) => async dispatch => {
     dispatch(loadUser());
 
   } catch (err) {
-    // console.log(err)
+    console.log(err)
     const errors = err.response.data.errors;
 
     if (errors) {

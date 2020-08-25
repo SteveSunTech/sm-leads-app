@@ -9,10 +9,10 @@ connectDB();
 // @yuchen
 app.use(function(req, res, next) {
 	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With');
+	res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With,x-auth-token, Authorization');
 	res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,HEAD,DELETE,OPTIONS');
 	next();
-  });
+});
 app.use(express.json({ extended: false }))
 
 // app.get('/', (req,res) =>
@@ -21,7 +21,8 @@ app.use(express.json({ extended: false }))
 
 // Define Routes
 app.use('/api/auth', require('./routes/auth'));
-// app.use('/api/basicuser', require('./routes/basicUser'));
+app.use('/api/basic', require('./routes/basicUser'));
+app.use('/api/am', require('./routes/amUser'));
 // app.use('/api/adminuser', require('./routes/adminUser'));
 
 const PORT = process.env.PORT || 5000;
@@ -54,44 +55,44 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 
 // Admin register @yuchen
-const bcrypt = require('bcryptjs');
-const User = require('./models/AdminUser');
+// const bcrypt = require('bcryptjs');
+// const User = require('./models/AdminUser');
 
-const adminRegister = async() => {
-  const password = 'abc12345678';
+// const adminRegister = async() => {
+//   const password = 'abc12345678';
 
-  const user = new User({
-    email: 'j0909089342@gmail.com',
-    password,
-    status: true
-  });
+//   const user = new User({
+//     email: 'j0909089342@gmail.com',
+//     password,
+//     status: true
+//   });
 
-  const salt = await bcrypt.genSalt(10);
-  user.password = await bcrypt.hash(password, salt);
+//   const salt = await bcrypt.genSalt(10);
+//   user.password = await bcrypt.hash(password, salt);
 
-  await user.save();
+//   await user.save();
 
-  console.log('********************************************************');
-}
-adminRegister();
-
-
+//   console.log('********************************************************');
+// }
+// adminRegister();
 
 
-// basic user register
+
+
+//basic user register
 // const bcrypt = require('bcryptjs');
 // const User = require('./models/BasicUser');
 // const College = require('./models/College');
 
 // const basicRegister = async() => {
-//   const college = await College.findById('5f2f7a09a5dc8a9d6f158996');
+//   const college = await College.findById('5f2f7a5b9103539d7dbec33b');
 //   const collegeDisplay = college.name;
 //   const password = 'test123123';
 
 //   const user = new User({
-//     email: 'mmk.ee.911@gmail.com',
+//     email: 'mingkunm@usc.edu',
 //     password,
-//     college: '5f2f7a09a5dc8a9d6f158996',
+//     college: '5f2f7a5b9103539d7dbec33b',
 //     collegeDisplay,
 //     area: 'Western',
 //     status: true
@@ -107,26 +108,76 @@ adminRegister();
 
 
 
+// modify basic user
+// const User = require('./models/BasicUser');
+
+// const basicRegister = async() => {
+// 	const email = 'mmk.ee.911@gmail.com';
+
+// 	const user = await User.findOne({ email });
+
+// 	console.log(user)
+
+// 	user.name = '马鸣坤';
+
+//   await user.save();
+//   console.log('Basic register success!');
+// }
+// basicRegister();
+
+
+
+// modify am user
+// const User = require('./models/AmUser');
+
+// const basicRegister = async() => {
+// 	const email = 'am@usc.edu';
+
+// 	const user = await User.findOne({ email });
+
+// 	console.log(user)
+
+// 	user.name = '朱彤';
+// 	user.area = 'western'
+
+//   await user.save();
+//   console.log('Basic register success!');
+// }
+// basicRegister();
+
+
+
+
+
 
 // AM user register
 // const bcrypt = require('bcryptjs');
 // const User = require('./models/AmUser');
+// const date = require('./utils/Date')
 
 // const amRegister = async() => {
-//   const password = 'test123123';
+// 	const password = 'test123123';
+// 	const college = [
+// 		{
+// 			collegeId: '5f2f7a09a5dc8a9d6f158996',
+// 			collegeDisplay: 'University of Southern California'
+// 		},
+// 		{
+// 			collegeId: '5f2f7a5b9103539d7dbec33b',
+// 			collegeDisplay: 'University of California, Riverside'
+// 		}
+// 	]
 
 //   const user = new User({
-//     email: 'mmk.ee.911@gmail.com',
-//     password,
-
+//     email: 'am@usc',
+// 		password,
+// 		college,
+// 		dateDisplay: date,
 //     status: true
 //   });
-
 //   const salt = await bcrypt.genSalt(10);
 //   user.password = await bcrypt.hash(password, salt);
-
 //   await user.save();
-
 //   console.log('Admin register success!');
 // }
 
@@ -136,19 +187,71 @@ adminRegister();
 
 
 
-
-
 // Register University
 // const College = require('./models/College');
 // const collegeRegister = async() => {
-//   // const name = 'University of Southern California';
-//   const name = 'University of California, Riverside';
+//   const name = 'University of Southern California';
+//   // const name = 'University of California, Riverside';
 //   const area = 'Western';
 
 //   const co = new College({
 //     name,
 //     area,
 //     availability: true
+//   });
+
+//   await co.save();
+
+//   console.log(`${name} Register Success!`);
+// }
+// collegeRegister();
+
+
+
+
+
+
+// modify college
+// const College = require('./models/College');
+// const collegeRegister = async() => {
+
+// 	const name = 'University of Southern California';
+
+// 	const id = '5f2f7a09a5dc8a9d6f158996';
+
+// 	const query = {
+// 		id,
+// 		name
+// 	}
+
+// 	const college = await College.findOne({ name })
+
+// 	college.group.unshift(query)
+
+// 	college.save();
+
+//   console.log(`${name} Register Success!`);
+// }
+// collegeRegister();
+
+
+
+
+
+
+
+// Register Group
+// const group = require('./models/Group');
+// const collegeRegister = async() => {
+//   // const name = 'University of Southern California';
+//   const name = '(2)UCR&SM保险答疑群';
+// 	const college = '5f2f7a5b9103539d7dbec33b'
+// 	const collegeDisplay = 'University of California, Riverside'
+
+//   const co = new Group({
+//     name,
+//     college,
+//     collegeDisplay
 //   });
 
 //   await co.save();

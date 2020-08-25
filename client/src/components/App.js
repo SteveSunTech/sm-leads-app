@@ -9,7 +9,8 @@ import Theme from './ui/Theme';
 import Alert from './ui/Alert';
 import { loadUser } from '../actions/auth';
 import setAuthToken from '../utils/setAuthToken';
-import AmbassadorQuery from './ambassador/query';
+import Ambassador from './ambassador/main';
+import Am from './am/main';
 import Admin from './admin/dashbord';
 
 // Redux
@@ -17,25 +18,35 @@ import { Provider } from 'react-redux';
 import store from '../store'
 
 if (localStorage.token) {
+	// console.log(localStorage.token);
 	setAuthToken(localStorage.token);
 }
 
-const App = () => {
-	useEffect(() => {
-		const temp = async () => {
-			try {
-				axios.get('/api/auth').then((e) => {
-					e.data.msg === 'authenticated' ? 
-						store.dispatch(loadUser()) : 
-						store.dispatch({type: UNKNOW_USER, payload: {}})
-				})
-			} catch (error) {
-				console.log(error)							//@yuchen 
-			}
-		}
+// const App = () => {
+// 	useEffect(() => {
+// 		const temp = async () => {
+// 			try {
+// 				// console.log(axios.get('/api/auth'))
+// 				// axios.get('/api/auth').then((e) => {
+// 					// console.log(e)
+// 					// console.log(e);
+// 					// e.data.msg === 'authenticated' ?
+// 					store.dispatch(loadUser())
+// 					// store.dispatch({type: UNKNOW_USER, payload: {}})
+// 				// }
+// 				// )
+// 			} catch (error) {
+// 				console.log(error)							//@yuchen
+// 			}
+// 		}
 
-		temp()
-	}, [])
+// 		temp()
+// 	}, [])
+
+const App = () => {
+  useEffect(() => {
+    store.dispatch(loadUser());
+  }, [])
 
 	return (
 		<Provider store={store}>
@@ -45,7 +56,8 @@ const App = () => {
 					<Switch>
 						<Route exact path='/' component={Login} />
 						<Route exact path='/login' component={Login} />
-						<Route exact path='/ambassador' component={AmbassadorQuery} />
+						<Route exact path='/ambassador' component={Ambassador} />
+						<Route exact path='/am' component={Am} />
 						<Route exact path='/admin' component={Admin} />
 					</Switch>
 				</Router>

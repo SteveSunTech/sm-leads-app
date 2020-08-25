@@ -49,6 +49,8 @@ const useStyles = makeStyles((theme) => ({
   },
   submit: {
     margin: theme.spacing(3, 0, 2),
+    //backgroundColor: 'green',
+    //color: 'white'
   },
 }));
 
@@ -84,6 +86,8 @@ const Login = ({ login, isAuthenticated, title }) => {
       return <Redirect to='/ambassador' />
     } else if (title === 'admin') {
       return <Redirect to='/admin' />
+    } else if (title === 'am') {
+      return <Redirect to='am' />
     }
   }
 

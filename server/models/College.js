@@ -11,7 +11,21 @@ const CollegeSchema = new Schema({
   },
   area: {
     type: String
-  }
+  },
+  kpi: {
+    type: String
+  },
+  group: [
+    {
+      id: {
+        type: Schema.Types.ObjectId,
+        ref: 'group'
+      },
+      name: {
+        type: String
+      }
+    }
+  ]
 })
 
 module.exports = College = mongoose.model('College', CollegeSchema);
