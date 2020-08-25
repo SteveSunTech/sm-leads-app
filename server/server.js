@@ -25,14 +25,14 @@ app.use('/api/auth', require('./routes/auth'));
 app.use('/api/basic', require('./routes/basicUser'));
 app.use('/api/am', require('./routes/amUser'));
 
-// Serve static assets in producton
-if(process.env.NODE_ENV = 'production') {
-	// Set static folder
-	app.use(express.static('client/build'));
+// Serve static assets in production
+if (process.env.NODE_ENV === 'production') {
+  // Set static folder
+  app.use(express.static('client/build'));
 
-	app.get('*', (req, res) => {
-		res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
-	})
+  app.get('*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  });
 }
 
 // app.use('/api/adminuser', require('./routes/adminUser'))
