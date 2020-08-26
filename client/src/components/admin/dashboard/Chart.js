@@ -1,6 +1,6 @@
-import React from './node_modules/react';
-import { useTheme } from './node_modules/@material-ui/core/styles';
-import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from './node_modules/recharts';
+import React from 'react';
+import { useTheme } from '@material-ui/core/styles';
+import { LineChart, Line, XAxis, YAxis, Label, ResponsiveContainer } from 'recharts';
 import Title from './Title';
 
 // Generate Sales Data

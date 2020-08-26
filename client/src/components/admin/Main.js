@@ -40,7 +40,7 @@ import SchoolIcon from '@material-ui/icons/School';
 
 import { loadUser } from '../../actions/auth';
 import { logout } from '../../actions/auth';
-// import Dashboard from './dashboard/Main'
+import Dashboard from './dashboard/Main'
 import College from './college/Main'
 
 function Copyright() {
@@ -250,8 +250,8 @@ const Main = ({ logout, isAuthenticated, title }) => {
         <Container maxWidth="lg" className={classes.container}>
           {
             mainComponent === 'Dashboard' ?
-            // <Dashboard />
-            <div>Dashboard</div> :
+            <Dashboard /> :
+            // <div>Dashboard</div> :
             mainComponent === 'College' ?
             <College />:
             mainComponent === 'Worker' ?

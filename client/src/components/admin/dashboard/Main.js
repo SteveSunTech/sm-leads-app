@@ -1,10 +1,10 @@
-import React, {Fragment} from './node_modules/react';
-import { connect } from './node_modules/react-redux';
-import clsx from './node_modules/clsx';
+import React, {Fragment} from 'react';
+import { connect } from 'react-redux';
+import clsx from 'clsx';
 
-import Grid from './node_modules/@material-ui/core/Grid';
-import Paper from './node_modules/@material-ui/core/Paper';
-import { makeStyles } from './node_modules/@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import Paper from '@material-ui/core/Paper';
+import { makeStyles } from '@material-ui/core/styles';
 
 import Chart from './Chart';
 
