@@ -24,6 +24,7 @@ router.get('/',auth, async (req, res) => {
     } else if (title == 'admin') {
       user = await AdminUser.findById(req.user).select('-password');
     }
+    // console.log(user)
     res.json({ user, title })
   } catch (error) {
     console.log(error);
@@ -87,7 +88,7 @@ router.post(
       }, (err, token) => {
         // console.log(token)
         if(err) throw err;
-        res.json({ token, title });
+        res.json({ token, title, user });
       });
 
     } catch (error) {

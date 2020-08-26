@@ -8,10 +8,11 @@ import Tab from '@material-ui/core/Tab';
 import Box from '@material-ui/core/Box';
 // import Paper from '@material-ui/core/Paper';
 
-import FindWechat from './findWechat'
+// import FindWechat from './findWechat'
 import Upload from './upload'
-import Dashboard from './dashboard'
+import WechatIndex from './wechatIndex'
 import SubAlert from '../ui/SubAlert';
+import Dashboard from './dashboard'
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
@@ -73,20 +74,20 @@ export default function TabsWrappedLabel() {
           >
           <Tab
             value="one"
-            label="微信号查重"
+            label="上传"
             wrapped
             {...a11yProps('one')}
           />
-          <Tab value="two" label="上传联系人" {...a11yProps('two')} />
-          <Tab value="three" label="控制台" {...a11yProps('three')} />
+          <Tab value="two" label="追踪" {...a11yProps('two')} />
+          <Tab value="three" label="Dashboard" {...a11yProps('three')} />
         </Tabs>
       </AppBar>
       <SubAlert />
       <TabPanel value={value} index="one">
-        <FindWechat />
+        <Upload />
       </TabPanel>
       <TabPanel value={value} index="two">
-        <Upload />
+        <WechatIndex />
       </TabPanel>
       <TabPanel value={value} index="three">
         <Dashboard />

@@ -87,7 +87,7 @@ const Login = ({ login, isAuthenticated, title }) => {
     } else if (title === 'admin') {
       return <Redirect to='/admin' />
     } else if (title === 'am') {
-      return <Redirect to='am' />
+      return <Redirect to='/am' />
     }
   }
 

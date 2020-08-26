@@ -10,8 +10,8 @@ import Alert from './ui/Alert';
 import { loadUser } from '../actions/auth';
 import setAuthToken from '../utils/setAuthToken';
 import Ambassador from './ambassador/main';
-import Am from './am/main';
-import Admin from './admin/dashbord';
+import Am from './amPro/Main';
+import Admin from './admin/Main';
 
 // Redux
 import { Provider } from 'react-redux';
