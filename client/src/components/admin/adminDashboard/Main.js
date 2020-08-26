@@ -32,7 +32,7 @@ const Main = ({ user }) => {
         {/* Chart */}
         <Grid item xs={12} md={8} lg={9}>
           <Paper className={fixedHeightPaper}>
-            {/* <Chart /> */}
+            <Chart />
           </Paper>
         </Grid>
         {/* Recent Deposits */}

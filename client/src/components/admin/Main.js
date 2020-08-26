@@ -40,7 +40,7 @@ import SchoolIcon from '@material-ui/icons/School';
 
 import { loadUser } from '../../actions/auth';
 import { logout } from '../../actions/auth';
-import Dashboard from './dashboard/Main'
+import Dashboard from './adminDashboard/Main'
 import College from './college/Main'
 
 function Copyright() {
