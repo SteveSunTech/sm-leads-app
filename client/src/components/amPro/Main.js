@@ -40,8 +40,8 @@ import SchoolIcon from '@material-ui/icons/School';
 
 import { loadUser } from '../../actions/auth';
 import { logout } from '../../actions/auth';
-import Dashboard from './dashboard/Main'
-import BasicManage from './BasicManage'
+import Dashboard from './dashboard/Main';
+import BasicManage from './BasicManage';
 
 function Copyright() {
   return (
