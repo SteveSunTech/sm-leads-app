@@ -103,4 +103,68 @@ router.post(
     }
 });
 
+// @route      Post api/am/lead/new
+// @desc       add new wechat lead account to database
+// @access     private
+router.post('/lead/new', auth, async (req, res) => {
+  const wechatId = req.body.wechat;
+  const status = req.body.status;
+  const college = req.body.college
+  let keywords = req.body.checkedItem;
+
+  if (wechatId === '') {
+    return res.status(400).json({ errors:[{ msg: '请填写微信号！' }]})
+  }
+  if (status === '') {
+    return res.status(400).json({ errors:[{ msg: '请选择状态！' }]})
+  }
+  if (college === '') {
+    return res.status(400).json({ errors:[{ msg: '请选择学校！' }]})
+  }
+
+  let keywordString = ''
+  if (keywords) {
+    keywordString = keywords.join(' ')
+  }
+
+  try {
+    const user = await AmUser.findById(req.user);
+    const group = await Group.findOne({ collegeDisplay:college });
+    const collegeID = await College.findOne({ name: college })
+    // console.log(group)
+    const wechatNew = new WechatNew({
+      wechatId,
+      status,
+      amUser: user.id,
+      amUserDisplay: user.email,
+      college: collegeID,
+      collegeDisplay: college,
+      group,
+      groupDisplay: group.name,
+      keywords: keywordString
+    })
+
+    wechatNew.save();
+
+    res.json({ wechatNew })
+  } catch (error) {
+    console.log(error)
+    return res.status(400).json({ errors:[{ msg: error }]})
+  }
+})
+
+// @route      Get /api/am/lead/index
+// @desc       get all wechat lead account belong to current user
+// @access     private
+router.get('/lead/index', auth, async (req, res) => {
+
+  try {
+    const wechats = await WechatNew.find({ amUser: req.user})
+
+    res.json({ wechats })
+  } catch (error) {
+    return res.status(400).json({ errors:[{ msg: error }]})
+  }
+})
+
 module.exports = router;

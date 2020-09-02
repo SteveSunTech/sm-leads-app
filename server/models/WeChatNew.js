@@ -56,6 +56,9 @@ const WechatNewSchema = new Schema({
   },
   groupDisplay: {
     type: String
+  },
+  keywords: {
+    type: String
   }
 })
 

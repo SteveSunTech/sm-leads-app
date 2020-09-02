@@ -25,14 +25,14 @@ export const single = ( wechat ) => async dispatch => {
 }
 
 // Upload wechat client to database
-export const upload = ( wechat, status ) => async dispatch => {
+export const upload = ( wechat, status, checkedItem ) => async dispatch => {
   const config = {
     headers: {
       'Content-Type': 'application/json'
     }
   }
 
-  const body = JSON.stringify({ wechat, status });
+  const body = JSON.stringify({ wechat, status, checkedItem });
 
   try {
     const res = await axios.post('/api/basic/new', body, config)

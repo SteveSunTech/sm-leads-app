@@ -19,8 +19,8 @@ const useStyles = makeStyles({
   },
 });
 
-function createData(id, college, group, wechat, status) {
-  return { id, college, group, wechat, status };
+function createData(id, college, group, wechat, status, keywords) {
+  return { id, college, group, wechat, status, keywords };
 }
 
 const WechatIndex = ({ wechats, get }) => {
@@ -34,7 +34,7 @@ const WechatIndex = ({ wechats, get }) => {
     .then(function(data) {
       // console.log(data)
       data.forEach(e => {
-        rows.push(createData(e._id, e.collegeDisplay, e.groupDisplay, e.wechatId, e.status))
+        rows.push(createData(e._id, e.collegeDisplay, e.groupDisplay, e.wechatId, e.status, e.keywords))
         setValue('')
         setValue(rows)
       })
@@ -55,6 +55,7 @@ const WechatIndex = ({ wechats, get }) => {
             <TableCell align='center'>群</TableCell>
             <TableCell align='center'>微信号</TableCell>
             <TableCell align='center'>状态</TableCell>
+            <TableCell align='center'>关键词</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -67,6 +68,7 @@ const WechatIndex = ({ wechats, get }) => {
               <TableCell align='center'>{e.group}</TableCell>
               <TableCell align='center'>{e.wechat}</TableCell>
               <TableCell align='center'>{e.status}</TableCell>
+              <TableCell align='center'>{e.keywords}</TableCell>
             </TableRow>
           )) : null}
         </TableBody>

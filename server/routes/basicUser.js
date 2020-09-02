@@ -31,6 +31,18 @@ router.post('/single', auth, async (req, res) => {
 router.post('/new', auth, async (req, res) => {
   const wechatId = req.body.wechat;
   const status = req.body.status;
+  let keywords = req.body.checkedItem;
+
+  if (wechatId === '') {
+    return res.status(400).json({ errors:[{ msg: '请填写微信号！' }]})
+  }
+  if (status === '') {
+    return res.status(400).json({ errors:[{ msg: '请选择状态！' }]})
+  }
+  let keywordString = ''
+  if (keywords) {
+    keywordString = keywords.join(' ')
+  }
 
   try {
     const user = await Basic.findById(req.user);
@@ -43,7 +55,8 @@ router.post('/new', auth, async (req, res) => {
       college: user.college,
       collegeDisplay: user.collegeDisplay,
       group,
-      groupDisplay: group.name
+      groupDisplay: group.name,
+      keywords: keywordString
     })
 
     wechatNew.save();

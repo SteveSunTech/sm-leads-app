@@ -25,14 +25,15 @@ import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
-import ListSubheader from '@material-ui/core/ListSubheader';
+// import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 // import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
 import PeopleIcon from '@material-ui/icons/People';
 import BarChartIcon from '@material-ui/icons/BarChart';
 import LayersIcon from '@material-ui/icons/Layers';
-import AssignmentIcon from '@material-ui/icons/Assignment';
+// import AssignmentIcon from '@material-ui/icons/Assignment';
 import SchoolIcon from '@material-ui/icons/School';
+import ImportContactsIcon from '@material-ui/icons/ImportContacts';
 
 
 // import Deposits from './Deposits';
@@ -42,6 +43,8 @@ import { loadUser } from '../../actions/auth';
 import { logout } from '../../actions/auth';
 import Dashboard from './amDashboard/Main';
 import BasicManage from './BasicManage';
+import AmLeads from './AmLeads';
+import SubAlert from '../ui/SubAlert';
 
 function Copyright() {
   return (
@@ -182,7 +185,7 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
             <MenuIcon />
           </IconButton>
           <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            Dashboard
+            { mainComponent }
           </Typography>
           <IconButton color="inherit">
             {/* <Badge badgeContent={4} color="secondary">
@@ -216,6 +219,12 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItem>
+          <ListItem button onClick={() => setMainComponent('Leads')}>
+            <ListItemIcon>
+              <ImportContactsIcon />
+            </ListItemIcon>
+            <ListItemText primary="Leads" />
+          </ListItem>
           <ListItem button onClick={() => setMainComponent('College')}>
             <ListItemIcon>
               <SchoolIcon />
@@ -247,6 +256,7 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
+          <SubAlert />
           {
             mainComponent === 'Dashboard' ?
             <Dashboard /> :
@@ -254,6 +264,8 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
             <div>college</div> :
             mainComponent === 'Basic' ?
             <BasicManage /> :
+            mainComponent === 'Leads' ?
+            <AmLeads /> :
             null
           }
           <Box pt={4}>
