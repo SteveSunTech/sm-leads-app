@@ -1,9 +1,7 @@
 import axios from "axios";
-import { setAlert } from './subAlert'
+import { setAlert } from "./subAlert";
 
-import {
-  AM_BASIC_NEW
-} from './types';
+import { AM_BASIC_NEW } from "./types";
 
 // // Lookup wechat from database
 // export const single = ( wechat ) => async dispatch => {
@@ -25,18 +23,18 @@ import {
 // }
 
 // Upload wechat client to database
-export const upload = ( wechat, status, checkedItem ) => async dispatch => {
+export const upload = (wechat, status, checkedItem) => async (dispatch) => {
   const config = {
     headers: {
-      'Content-Type': 'application/json'
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
 
   const body = JSON.stringify({ wechat, status, checkedItem });
 
   try {
-    const res = await axios.post('/api/am/new', body, config)
-    const payload = res.data.wechatNew
+    const res = await axios.post("/api/am/new", body, config);
+    const payload = res.data.wechatNew;
 
     // dispatch({
     //   type: WECHAT_NEW,
@@ -44,128 +42,141 @@ export const upload = ( wechat, status, checkedItem ) => async dispatch => {
     // })
 
     dispatch(
-      setAlert(`“微信：${payload.wechatId}，状态：${payload.status}” 上传成功！`, 'success')
-    )
-
-
+      setAlert(
+        `“微信：${payload.wechatId}，状态：${payload.status}” 上传成功！`,
+        "success"
+      )
+    );
   } catch (err) {
-    console.log(err)
+    console.log(err);
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'error')));
+      errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
     }
   }
-}
+};
 
 // Upload basic user to database
-export const newBasic = ( email, password, name, college ) => async dispatch => {
+export const newBasic = (email, password, name, college) => async (
+  dispatch
+) => {
   const config = {
     headers: {
-      'Content-Type': 'application/json'
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
 
   const body = JSON.stringify({ email, password, name, college });
 
   try {
-    const res = await axios.post('/api/am/basic/new', body, config)
-    const payload = res.data.user
+    const res = await axios.post("/api/am/basic/new", body, config);
+    const payload = res.data.user;
 
     // console.log(payload)
 
     dispatch({
       type: AM_BASIC_NEW,
-      payload
-    })
+      payload,
+    });
 
-    dispatch(
-      setAlert(`校园大使：${payload.name}， 创建成功！`, 'success')
-    )
-
-
+    dispatch(setAlert(`校园大使：${payload.name}， 创建成功！`, "success"));
   } catch (err) {
-    console.log(err)
+    console.log(err);
     if (err.response.data.errors) {
       const errors = err.response.data.errors;
       if (errors) {
-        errors.forEach(error => dispatch(setAlert(error.msg, 'error')));
+        errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
       }
     } else {
-      dispatch(setAlert(err, 'error'))
+      dispatch(setAlert(err, "error"));
     }
   }
-}
+};
 
 // get all wechat lead account belong to current user
-export const getAllBasic = () => async dispatch => {
-
+export const getAllBasic = () => async (dispatch) => {
   try {
-    const res = await axios.get('api/am/basic/index')
+    const res = await axios.get("api/am/basic/index");
     // console.log(res.data.wechats)
-    return new Promise(resolve => {
-      resolve(res.data.basics)
-    })
-
+    return new Promise((resolve) => {
+      resolve(res.data.basics);
+    });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     if (err.response.data.errors) {
       const errors = err.response.data.errors;
       if (errors) {
-        errors.forEach(error => dispatch(setAlert(error.msg, 'error')));
+        errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
       }
     } else {
-      dispatch(setAlert(err, 'error'))
+      dispatch(setAlert(err, "error"));
     }
   }
-}
+};
 
 // get all wechat lead account belong to current user
-export const getWechatIndex = () => async dispatch => {
-
+export const getWechatIndex = () => async (dispatch) => {
   try {
-    const res = await axios.get('/api/am/lead/index')
+    const res = await axios.get("/api/am/lead/index");
     // console.log(res.data.wechats)
-    return new Promise(resolve => {
-      resolve(res.data.wechats)
-    })
-
+    return new Promise((resolve) => {
+      resolve(res.data.wechats);
+    });
   } catch (err) {
-    console.log(err)
+    console.log(err);
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'error')));
+      errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
     }
   }
-}
+};
 
 // Upload wechat client to database
-export const uploadLead = ( wechat, status, checkedItem, college ) => async dispatch => {
+export const uploadLead = (
+  wechat,
+  status,
+  checkedItem,
+  college,
+  grade,
+  country,
+  otherKeywords,
+  note
+) => async (dispatch) => {
   const config = {
     headers: {
-      'Content-Type': 'application/json'
-    }
-  }
+      "Content-Type": "application/json",
+    },
+  };
 
-  const body = JSON.stringify({ wechat, status, checkedItem, college });
+  const body = JSON.stringify({
+    wechat,
+    status,
+    checkedItem,
+    college,
+    grade,
+    country,
+    otherKeywords,
+    note,
+  });
 
   try {
-    const res = await axios.post('/api/am/lead/new', body, config)
-    const payload = res.data.wechatNew
-
+    const res = await axios.post("/api/am/lead/new", body, config);
+    const payload = res.data.wechatNew;
 
     dispatch(
-      setAlert(`“微信：${payload.wechatId}，状态：${payload.status}” 上传成功！`, 'success')
-    )
-
-
+      setAlert(
+        `“微信：${payload.wechatId}，状态：${payload.status}” 上传成功！`,
+        "success"
+      )
+    );
   } catch (err) {
-    console.log(err)
+    console.log(err);
     const errors = err.response.data.errors;
 
     if (errors) {
-      errors.forEach(error => dispatch(setAlert(error.msg, 'error')));
+      errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
     }
   }
-}
+};

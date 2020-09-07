@@ -1,37 +1,44 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const connectDB = require('../config/db')
-const path = require('path')
+const connectDB = require("../config/db");
+const path = require("path");
 
 // Connect Database
 connectDB();
 
 // Init Middleware
 // @yuchen
-app.use(function(req, res, next) {
-	res.header('Access-Control-Allow-Origin', '*');
-	res.header('Access-Control-Allow-Headers', 'Content-Type,X-Requested-With,x-auth-token, Authorization');
-	res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,HEAD,DELETE,OPTIONS');
-	next();
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Content-Type,X-Requested-With,x-auth-token, Authorization"
+  );
+  res.header(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,HEAD,DELETE,OPTIONS"
+  );
+  next();
 });
-app.use(express.json({ extended: false }))
+app.use(express.json({ extended: false }));
 
 // app.get('/', (req,res) =>
 //   res.json({ msg: 'Welcome!' })
 // );
 
 // Define Routes
-app.use('/api/auth', require('./routes/auth'));
-app.use('/api/basic', require('./routes/basicUser'));
-app.use('/api/am', require('./routes/amUser'));
+app.use("/api/auth", require("./routes/auth"));
+app.use("/api/basic", require("./routes/basicUser"));
+app.use("/api/am", require("./routes/amUser"));
+app.use("/api/lead", require("./routes/lead"));
 
 // Serve static assets in production
-if (process.env.NODE_ENV === 'production') {
+if (process.env.NODE_ENV === "production") {
   // Set static folder
-  app.use(express.static('client/build'));
+  app.use(express.static("client/build"));
 
-  app.get('*', (req, res) => {
-    res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"));
   });
 }
 
@@ -48,11 +55,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
-
-
 // ************************************************************************************************************
-
-
 
 // // Admin register
 // const bcrypt = require('bcryptjs');
@@ -76,9 +79,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 // }
 // adminRegister();
 
-
-
-
 // Admin register @yuchen
 // const bcrypt = require('bcryptjs');
 // const User = require('./models/AdminUser');
@@ -100,9 +100,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 //   console.log('********************************************************');
 // }
 // adminRegister();
-
-
-
 
 //basic user register
 // const bcrypt = require('bcryptjs');
@@ -130,9 +127,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 // }
 // basicRegister();
 
-
-
-
 // modify basic user
 // const User = require('./models/BasicUser');
 
@@ -149,8 +143,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 //   console.log('Basic register success!');
 // }
 // basicRegister();
-
-
 
 // modify am user
 // const User = require('./models/AmUser');
@@ -169,11 +161,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 //   console.log('Basic register success!');
 // }
 // basicRegister();
-
-
-
-
-
 
 // AM user register
 // const bcrypt = require('bcryptjs');
@@ -208,10 +195,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 
 // amRegister();
 
-
-
-
-
 // Register University
 // const College = require('./models/College');
 // const collegeRegister = async() => {
@@ -230,11 +213,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 //   console.log(`${name} Register Success!`);
 // }
 // collegeRegister();
-
-
-
-
-
 
 // modify college
 // const College = require('./models/College');
@@ -259,12 +237,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 // }
 // collegeRegister();
 
-
-
-
-
-
-
 // Register Group
 // const group = require('./models/Group');
 // const collegeRegister = async() => {
@@ -284,9 +256,6 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 //   console.log(`${name} Register Success!`);
 // }
 // collegeRegister();
-
-
-
 
 // const fs = require('fs')
 // const db = './Data/GroupContact.json';

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const WechatNewSchema = new Schema({
@@ -8,58 +8,80 @@ const WechatNewSchema = new Schema({
   },
   worker: {
     type: Boolean,
-    default: false
+    default: false,
   },
   competitor: {
     type: Boolean,
-    default: false
+    default: false,
   },
   ignore: {
     type: Boolean,
-    default: false
+    default: false,
   },
   status: {
-    type: String
+    type: String,
   },
   note: {
-    type: String
+    type: String,
   },
-  date: {
+  createdDate: {
     type: Date,
-    defaule: Date.now()
+    defaule: Date.now(),
+  },
+  createdDateDisplay: {
+    type: String,
+  },
+  updateDate: {
+    type: Date,
+    default: Date.now(),
+  },
+  updateDateDisplay: {
+    type: String,
   },
   college: {
     type: Schema.Types.ObjectId,
-    ref: 'College'
+    ref: "College",
   },
   collegeDisplay: {
     type: String,
-    required: true
+    required: true,
   },
   basicUser: {
     type: Schema.Types.ObjectId,
-    ref: 'basicUser'
+    ref: "basicUser",
   },
   basicUserDisplay: {
-    type: String
+    type: String,
   },
   amUser: {
     type: Schema.Types.ObjectId,
-    ref: 'amUser'
+    ref: "amUser",
   },
   amUserDisplay: {
-    type: String
+    type: String,
   },
   group: {
     type: Schema.Types.ObjectId,
-    ref: 'group'
+    ref: "group",
   },
   groupDisplay: {
-    type: String
+    type: String,
   },
   keywords: {
-    type: String
-  }
-})
+    type: String,
+  },
+  otherKeywords: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
+  grade: {
+    type: String,
+  },
+  note: {
+    type: String,
+  },
+});
 
-module.exports = WechatNew = mongoose.model('WechatNew', WechatNewSchema);
+module.exports = WechatNew = mongoose.model("WechatNew", WechatNewSchema);
