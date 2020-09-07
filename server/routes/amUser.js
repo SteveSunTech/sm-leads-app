@@ -176,4 +176,8 @@ router.get("/lead/index", auth, async (req, res) => {
   }
 });
 
+router.get("/", auth, (req, res) => {
+  res.send("ok");
+});
+
 module.exports = router;
