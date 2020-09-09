@@ -29,6 +29,7 @@ import FormLabel from "@material-ui/core/FormLabel";
 import { uploadLead } from "../../actions/am";
 import { Checkbox, FormGroup } from "@material-ui/core";
 import { getWechatIndex } from "../../actions/am";
+import { getCollegeIndexOfCurrentUser } from "../../actions/am";
 // import { set } from "mongoose";
 import { getSingleLead } from "../../actions/lead";
 import { updateSingleLead } from "../../actions/lead";
@@ -125,6 +126,7 @@ const Upload = ({
   getSingleLead,
   updateSingleLead,
   deleteSingleLead,
+  getCollegeIndexOfCurrentUser,
 }) => {
   const classes = useStyles();
 
@@ -507,6 +509,39 @@ const Upload = ({
   };
 
   //***************************************************************
+  // get college list belong to current user
+  // **************************************************************
+
+  function createAllCollegeDropdownData(name) {
+    return {
+      name,
+    };
+  }
+
+  let rowsForCollege = [];
+
+  const [allCollegeValue, setAllCollegeValue] = useState();
+
+  const getCollegeList = () => {
+    getCollegeIndexOfCurrentUser().then(function (data) {
+      // console.log(data.data);
+      if (data.data) {
+        var bar = new Promise((resolve, reject) => {
+          data.data.forEach(async (e) => {
+            rowsForCollege.push(createAllCollegeDropdownData(e.collegeDisplay));
+            if (data.data.length === rowsForCollege.length) resolve();
+          });
+        });
+
+        bar.then(() => {
+          setAllCollegeValue("");
+          setAllCollegeValue(rowsForCollege);
+        });
+      }
+    });
+  };
+
+  //***************************************************************
   // lead index
   // **************************************************************
 
@@ -552,6 +587,7 @@ const Upload = ({
   // 性能需要提升
   useEffect(() => {
     getTableData();
+    getCollegeList();
   }, []);
 
   return (
@@ -639,14 +675,16 @@ const Upload = ({
                     onChange={collgeChange}
                     label="college"
                   >
-                    <MenuItem value={"University of Southern California"}>
-                      {" "}
-                      University of Southern California
-                    </MenuItem>
-                    <MenuItem value={"University of California, Riverside"}>
-                      {" "}
-                      University of California, Riverside
-                    </MenuItem>
+                    {allCollegeValue
+                      ? allCollegeValue.map((e) => (
+                          <MenuItem
+                            key={Math.floor(Math.random() * 100000)}
+                            value={e.name}
+                          >
+                            {e.name}
+                          </MenuItem>
+                        ))
+                      : null}
                   </Select>
                   {/* <FormHelperText>必/FormHelperText> */}
                 </FormControl>
@@ -855,12 +893,16 @@ const Upload = ({
                     onChange={(e) => collgeChange2(e)}
                     label="college"
                   >
-                    <MenuItem value={"University of Southern California"}>
-                      University of Southern California
-                    </MenuItem>
-                    <MenuItem value={"University of California, Riverside"}>
-                      University of California, Riverside
-                    </MenuItem>
+                    {allCollegeValue
+                      ? allCollegeValue.map((e) => (
+                          <MenuItem
+                            key={Math.floor(Math.random() * 100000)}
+                            value={e.name}
+                          >
+                            {e.name}
+                          </MenuItem>
+                        ))
+                      : null}
                   </Select>
                   {/* <FormHelperText>必/FormHelperText> */}
                 </FormControl>
@@ -1001,4 +1043,5 @@ export default connect(null, {
   getSingleLead,
   updateSingleLead,
   deleteSingleLead,
+  getCollegeIndexOfCurrentUser,
 })(Upload);

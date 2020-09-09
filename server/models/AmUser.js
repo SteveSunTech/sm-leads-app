@@ -1,29 +1,29 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const amUserSchema = mongoose.Schema({
   email: {
     type: String,
     required: true,
-    unique: true
+    unique: true,
   },
   password: {
     type: String,
-    required: true
+    required: true,
   },
   date: {
     type: Date,
-    default: Date.now
+    default: Date.now(),
   },
   dateDisplay: {
-    type: String
+    type: String,
   },
   status: {
     type: Boolean,
-    required: true
+    required: true,
   },
   area: {
-    type: String
+    type: String,
   },
   // title: {
   //   type: String,
@@ -33,38 +33,38 @@ const amUserSchema = mongoose.Schema({
     {
       collegeId: {
         type: Schema.Types.ObjectId,
-        ref: 'College'
+        ref: "College",
       },
       collegeDisplay: {
-        type: String
-      }
-    }
+        type: String,
+      },
+    },
   ],
   basic: [
     {
       basicId: {
         type: Schema.Types.ObjectId,
-        ref: 'basicUser'
+        ref: "basicUser",
       },
       basicDisplay: {
-        type: String
-      }
-    }
+        type: String,
+      },
+    },
   ],
   wechat: [
     {
       wechatId: {
         type: Schema.Types.ObjectId,
-        ref: 'WechatNew'
+        ref: "WechatNew",
       },
       wechatDisplay: {
-        type: String
-      }
-    }
+        type: String,
+      },
+    },
   ],
   name: {
-    type: String
-  }
-})
+    type: String,
+  },
+});
 
-module.exports = basicUser = mongoose.model('amUser', amUserSchema);
+module.exports = basicUser = mongoose.model("amUser", amUserSchema);

@@ -1,31 +1,32 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const CollegeSchema = new Schema({
   name: {
     type: String,
     required: true,
+    unique: true,
   },
   availability: {
     type: Boolean,
   },
   area: {
-    type: String
+    type: String,
   },
   kpi: {
-    type: String
+    type: String,
   },
   group: [
     {
       id: {
         type: Schema.Types.ObjectId,
-        ref: 'group'
+        ref: "group",
       },
       name: {
-        type: String
-      }
-    }
-  ]
-})
+        type: String,
+      },
+    },
+  ],
+});
 
-module.exports = College = mongoose.model('College', CollegeSchema);
+module.exports = College = mongoose.model("College", CollegeSchema);

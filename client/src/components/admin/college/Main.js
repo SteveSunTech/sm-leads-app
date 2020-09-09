@@ -1,37 +1,39 @@
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useState } from "react";
 
-import Button from '@material-ui/core/Button';
-import Box from '@material-ui/core/Box';
-import TextField from '@material-ui/core/TextField';
-import MenuItem from '@material-ui/core/MenuItem';
-import FormControl from '@material-ui/core/FormControl';
-import Select from '@material-ui/core/Select';
-import InputLabel from '@material-ui/core/InputLabel';
-import { connect } from 'react-redux';
-import { makeStyles } from '@material-ui/styles';
+import Button from "@material-ui/core/Button";
+import Box from "@material-ui/core/Box";
+import TextField from "@material-ui/core/TextField";
+import MenuItem from "@material-ui/core/MenuItem";
+import FormControl from "@material-ui/core/FormControl";
+import Select from "@material-ui/core/Select";
+import InputLabel from "@material-ui/core/InputLabel";
+import { connect } from "react-redux";
+import { makeStyles } from "@material-ui/styles";
+
+import { addNewCollege } from "../../../actions/admin";
 
 const useStyles = makeStyles((theme) => ({
   new: {
-    marginTop: '25px',
-    marginBottom: '25px'
+    marginTop: "25px",
+    marginBottom: "25px",
   },
   newBox: {
-    marginBottom: '25px'
+    marginBottom: "25px",
   },
   newBoxForm: {
-    '& > *': {
+    "& > *": {
       margin: theme.spacing(1),
-      width: '25ch',
-    }
+      width: "25ch",
+    },
   },
   newBoxSubmit: {
-    width: '30px',
-    marginTop: '15px',
-    backgroundColor: '#66CC00',
-    color: 'white',
-    '&:hover': {
-      backgroundColor: 'green'
-    }
+    width: "30px",
+    marginTop: "15px",
+    backgroundColor: "#66CC00",
+    color: "white",
+    "&:hover": {
+      backgroundColor: "green",
+    },
   },
   table: {
     minWidth: 650,
@@ -41,39 +43,38 @@ const useStyles = makeStyles((theme) => ({
     minWidth: 120,
   },
   collegeInput: {
-    width: '350px'
-  }
+    width: "350px",
+  },
 }));
 
-const Main = ()=> {
-
+const Main = ({ addNewCollege }) => {
   const classes = useStyles();
 
   const [formData, setFormData] = useState({
-    college: '',
-    area:''
-  })
-  const {college, area} = formData;
+    college: "",
+    area: "",
+  });
+  const { college, area } = formData;
 
-  const [areaDropDown, setArea] = useState('');
+  const [areaDropDown, setArea] = useState("");
   const areaChange = (e) => {
-    setArea(e.target.value)
+    setArea(e.target.value);
     setFormData({
       ...formData,
-      area: e.target.value
-    })
-  }
+      area: e.target.value,
+    });
+  };
 
-  const newOnChange = e => setFormData({
-    ...formData,
-    [e.target.name]: e.target.value
-  })
+  const newOnChange = (e) =>
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
 
-  const newBasicSubmit = e => {
+  const newBasicSubmit = (e) => {
     e.preventDefault();
-    // newBasic( email, password, name, college )
-  }
-
+    addNewCollege(college, area);
+  };
 
   return (
     <Fragment>
@@ -88,14 +89,14 @@ const Main = ()=> {
           className={classes.newBoxForm}
           noValidate
           autoComplete="off"
-          onSubmit={e => newBasicSubmit(e)}
+          onSubmit={(e) => newBasicSubmit(e)}
         >
           <TextField
             id="college"
             name="college"
             label="学校"
             variant="outlined"
-            onChange={e => newOnChange(e)}
+            onChange={(e) => newOnChange(e)}
             className={classes.collegeInput}
           />
           <FormControl variant="outlined" className={classes.formControl}>
@@ -107,9 +108,9 @@ const Main = ()=> {
               onChange={areaChange}
               label="area"
             >
-              <MenuItem value={'Western'}>西部</MenuItem>
-              <MenuItem value={'Eastern'}>东部</MenuItem>
-              <MenuItem value={'Middle'}>中南部</MenuItem>
+              <MenuItem value={"Western"}>西部</MenuItem>
+              <MenuItem value={"Eastern"}>东部</MenuItem>
+              <MenuItem value={"Middle"}>中南部</MenuItem>
             </Select>
           </FormControl>
           <Button
@@ -123,7 +124,7 @@ const Main = ()=> {
         </form>
       </Box>
     </Fragment>
-  )
-}
+  );
+};
 
-export default Main
+export default connect(null, { addNewCollege })(Main);

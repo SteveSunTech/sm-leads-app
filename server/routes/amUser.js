@@ -143,8 +143,8 @@ router.post("/lead/new", auth, async (req, res) => {
       amUserDisplay: user.email,
       college: collegeID,
       collegeDisplay: college,
-      group,
-      groupDisplay: group.name,
+      // group,
+      // groupDisplay: group.name,
       keywords: keywordString,
       otherKeywords,
       country,
@@ -176,8 +176,24 @@ router.get("/lead/index", auth, async (req, res) => {
   }
 });
 
-router.get("/", auth, (req, res) => {
-  res.send("ok");
+// @route      Get/api/am/college/index/:id
+// @desc       get all colleges belong to current user
+// @access     private
+router.get("/college/index/", auth, async (req, res) => {
+  try {
+    const user = await AmUser.findById(req.user);
+
+    const colleges = user.college;
+
+    res.json(colleges);
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ errors: [{ msg: error }] });
+  }
 });
+
+// router.get("/", auth, (req, res) => {
+//   res.send("ok");
+// });
 
 module.exports = router;

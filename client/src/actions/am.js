@@ -180,3 +180,14 @@ export const uploadLead = (
     }
   }
 };
+
+export const getCollegeIndexOfCurrentUser = () => async (dispatch) => {
+  try {
+    const res = axios.get(`/api/am/college/index/`);
+    return new Promise((resolve) => {
+      resolve(res);
+    });
+  } catch (err) {
+    console.log(err);
+  }
+};
