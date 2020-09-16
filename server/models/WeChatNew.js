@@ -5,6 +5,7 @@ const WechatNewSchema = new Schema({
   wechatId: {
     type: String,
     required: true,
+    unique: true,
   },
   worker: {
     type: Boolean,
