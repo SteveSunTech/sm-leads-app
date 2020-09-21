@@ -1,60 +1,61 @@
-import React, { useEffect, useState } from 'react';
-import clsx from 'clsx';
-import { connect } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import React, { useState } from "react";
+import clsx from "clsx";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 // import { Button } from '@material-ui/core';
-import { mainListItems, secondaryListItems } from './listItems';
+// import { mainListItems, secondaryListItems } from "./listItems";
+import { secondaryListItems } from "./listItems";
 
-import { makeStyles } from '@material-ui/core/styles';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Drawer from '@material-ui/core/Drawer';
-import Box from '@material-ui/core/Box';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Badge from '@material-ui/core/Badge';
-import Container from '@material-ui/core/Container';
-import Link from '@material-ui/core/Link';
-import MenuIcon from '@material-ui/icons/Menu';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+import { makeStyles } from "@material-ui/core/styles";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import Drawer from "@material-ui/core/Drawer";
+import Box from "@material-ui/core/Box";
+import AppBar from "@material-ui/core/AppBar";
+import Toolbar from "@material-ui/core/Toolbar";
+import List from "@material-ui/core/List";
+import Typography from "@material-ui/core/Typography";
+import Divider from "@material-ui/core/Divider";
+import IconButton from "@material-ui/core/IconButton";
+import Badge from "@material-ui/core/Badge";
+import Container from "@material-ui/core/Container";
+import Link from "@material-ui/core/Link";
+import MenuIcon from "@material-ui/icons/Menu";
+import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 // import NotificationsIcon from '@material-ui/icons/Notifications';
-import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import ListItem from "@material-ui/core/ListItem";
+import ListItemIcon from "@material-ui/core/ListItemIcon";
+import ListItemText from "@material-ui/core/ListItemText";
 // import ListSubheader from '@material-ui/core/ListSubheader';
-import DashboardIcon from '@material-ui/icons/Dashboard';
+import DashboardIcon from "@material-ui/icons/Dashboard";
 // import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import PeopleIcon from '@material-ui/icons/People';
-import BarChartIcon from '@material-ui/icons/BarChart';
-import LayersIcon from '@material-ui/icons/Layers';
+// import PeopleIcon from "@material-ui/icons/People";
+import BarChartIcon from "@material-ui/icons/BarChart";
+import LayersIcon from "@material-ui/icons/Layers";
 // import AssignmentIcon from '@material-ui/icons/Assignment';
-import SchoolIcon from '@material-ui/icons/School';
-import ImportContactsIcon from '@material-ui/icons/ImportContacts';
-
+// import SchoolIcon from "@material-ui/icons/School";
+import ImportContactsIcon from "@material-ui/icons/ImportContacts";
+import MenuItem from "@material-ui/core/Menu";
 
 // import Deposits from './Deposits';
 // import Orders from './Orders';
 
-import { loadUser } from '../../actions/auth';
-import { logout } from '../../actions/auth';
-import Dashboard from './amDashboard/Main';
-import BasicManage from './BasicManage';
-import AmLeads from './AmLeads';
-import SubAlert from '../ui/SubAlert';
+import { loadUser } from "../../actions/auth";
+import { logout } from "../../actions/auth";
+import Dashboard from "./amDashboard/Main";
+import BasicManage from "./BasicManage";
+import AmLeads from "./AmLeads";
+import SubAlert from "../ui/SubAlert";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
+      {"Copyright © "}
       <Link color="inherit" href="https://smcovered.com/">
         Student Medicover
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -63,21 +64,21 @@ const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
   root: {
-    display: 'flex',
+    display: "flex",
   },
   toolbar: {
     paddingRight: 24, // keep right padding when drawer closed
   },
   toolbarIcon: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'flex-end',
-    padding: '0 8px',
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    padding: "0 8px",
     ...theme.mixins.toolbar,
   },
   appBar: {
     zIndex: theme.zIndex.drawer + 1,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
@@ -85,7 +86,7 @@ const useStyles = makeStyles((theme) => ({
   appBarShift: {
     marginLeft: drawerWidth,
     width: `calc(100% - ${drawerWidth}px)`,
-    transition: theme.transitions.create(['width', 'margin'], {
+    transition: theme.transitions.create(["width", "margin"], {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
@@ -94,36 +95,36 @@ const useStyles = makeStyles((theme) => ({
     marginRight: 36,
   },
   menuButtonHidden: {
-    display: 'none',
+    display: "none",
   },
   title: {
     flexGrow: 1,
   },
   drawerPaper: {
-    position: 'relative',
-    whiteSpace: 'nowrap',
+    position: "relative",
+    whiteSpace: "nowrap",
     width: drawerWidth,
-    transition: theme.transitions.create('width', {
+    transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.enteringScreen,
     }),
   },
   drawerPaperClose: {
-    overflowX: 'hidden',
-    transition: theme.transitions.create('width', {
+    overflowX: "hidden",
+    transition: theme.transitions.create("width", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
     width: theme.spacing(7),
-    [theme.breakpoints.up('sm')]: {
+    [theme.breakpoints.up("sm")]: {
       width: theme.spacing(9),
     },
   },
   appBarSpacer: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
-    height: '100vh',
-    overflow: 'auto',
+    height: "100vh",
+    overflow: "auto",
   },
   container: {
     paddingTop: theme.spacing(4),
@@ -131,9 +132,9 @@ const useStyles = makeStyles((theme) => ({
   },
   paper: {
     padding: theme.spacing(2),
-    display: 'flex',
-    overflow: 'auto',
-    flexDirection: 'column',
+    display: "flex",
+    overflow: "auto",
+    flexDirection: "column",
   },
   fixedHeight: {
     height: 240,
@@ -141,7 +142,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Main = ({ user, logout, isAuthenticated, title }) => {
-
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -152,49 +152,65 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
   };
   const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
+  const [mainComponent, setMainComponent] = useState("Dashboard");
 
-  const [mainComponent, setMainComponent] = useState('Dashboard')
+  // highlight selected item
+  const [selectedItem, setSelectedItem] = useState(0);
+  const updateSelectedItem = (selectedIndex) => {
+    setSelectedItem(selectedIndex);
+  };
 
+  // authentication
   if (isAuthenticated) {
-    if (title === 'basic') {
-      return <Redirect to='/ambassador' />
-    } else if (title === 'admin') {
-      return <Redirect to='/admin' />
+    if (title === "basic") {
+      return <Redirect to="/ambassador" />;
+    } else if (title === "admin") {
+      return <Redirect to="/admin" />;
     }
   } else {
-    return <Redirect to='/' />
+    return <Redirect to="/" />;
   }
 
   const logoutUser = () => {
     logout();
-    return <Redirect to='/' />
-  }
+    return <Redirect to="/" />;
+  };
 
   return (
     <div className={classes.root}>
       <CssBaseline />
-      <AppBar position="absolute" className={clsx(classes.appBar, open && classes.appBarShift)}>
+      <AppBar
+        position="absolute"
+        className={clsx(classes.appBar, open && classes.appBarShift)}
+      >
         <Toolbar className={classes.toolbar}>
           <IconButton
             edge="start"
             color="inherit"
             aria-label="open drawer"
             onClick={handleDrawerOpen}
-            className={clsx(classes.menuButton, open && classes.menuButtonHidden)}
+            className={clsx(
+              classes.menuButton,
+              open && classes.menuButtonHidden
+            )}
           >
             <MenuIcon />
           </IconButton>
-          <Typography component="h1" variant="h6" color="inherit" noWrap className={classes.title}>
-            { mainComponent }
+          <Typography
+            component="h1"
+            variant="h6"
+            color="inherit"
+            noWrap
+            className={classes.title}
+          >
+            {mainComponent}
           </Typography>
           <IconButton color="inherit">
             {/* <Badge badgeContent={4} color="secondary">
               <NotificationsIcon />
             </Badge> */}
             <Badge color="secondary">
-              <ExitToAppIcon
-              onClick={() => logoutUser()}
-            />
+              <ExitToAppIcon onClick={() => logoutUser()} />
             </Badge>
           </IconButton>
         </Toolbar>
@@ -213,27 +229,68 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
         </div>
         <Divider />
         <List>
-          <ListItem button onClick={() => setMainComponent('Dashboard')}>
+          <ListItem
+            button
+            onClick={() => {
+              updateSelectedItem(0);
+              setMainComponent("Dashboard");
+            }}
+            selected={selectedItem === 0}
+          >
             <ListItemIcon>
               <DashboardIcon />
             </ListItemIcon>
             <ListItemText primary="Dashboard" />
           </ListItem>
-          <ListItem button onClick={() => setMainComponent('Leads')}>
+          <ListItem
+            button
+            onClick={() => {
+              updateSelectedItem(1);
+              setMainComponent("All Leads");
+            }}
+            selected={selectedItem === 1}
+          >
             <ListItemIcon>
               <ImportContactsIcon />
             </ListItemIcon>
-            <ListItemText primary="Leads" />
+            <ListItemText primary="All Leads" />
           </ListItem>
-          <ListItem button onClick={() => setMainComponent('College')}>
+          <ListItem
+            button
+            onClick={() => {
+              updateSelectedItem(1.5);
+              setMainComponent("Follow Up");
+            }}
+            selected={selectedItem === 1.5}
+          >
             <ListItemIcon>
-              <SchoolIcon />
+              <ImportContactsIcon />
             </ListItemIcon>
-            <ListItemText primary="学校" />
+            <ListItemText primary="Follow Up" />
           </ListItem>
-          <ListItem button onClick={() => setMainComponent('Basic')}>
+          <ListItem
+            button
+            onClick={() => {
+              updateSelectedItem(2);
+              setMainComponent("College");
+            }}
+            selected={selectedItem === 2}
+          >
             <ListItemIcon>
-              <PeopleIcon />
+              <ImportContactsIcon />
+            </ListItemIcon>
+            <ListItemText primary="College" />
+          </ListItem>
+          <ListItem
+            button
+            onClick={() => {
+              updateSelectedItem(3);
+              setMainComponent("校园大使");
+            }}
+            selected={selectedItem === 3}
+          >
+            <ListItemIcon>
+              <ImportContactsIcon />
             </ListItemIcon>
             <ListItemText primary="校园大使" />
           </ListItem>
@@ -257,17 +314,15 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           <SubAlert />
-          {
-            mainComponent === 'Dashboard' ?
-            <Dashboard /> :
-            mainComponent === 'College' ?
-            <div>college</div> :
-            mainComponent === 'Basic' ?
-            <BasicManage /> :
-            mainComponent === 'Leads' ?
-            <AmLeads /> :
-            null
-          }
+          {mainComponent === "Dashboard" ? (
+            <Dashboard />
+          ) : mainComponent === "College" ? (
+            <div>college</div>
+          ) : mainComponent === "校园大使" ? (
+            <BasicManage />
+          ) : mainComponent === "All Leads" ? (
+            <AmLeads />
+          ) : null}
           <Box pt={4}>
             <Copyright />
           </Box>
@@ -275,12 +330,12 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
       </main>
     </div>
   );
-}
+};
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.auth.user,
   isAuthenticated: state.auth.isAuthenticated,
-  title: state.auth.title
-})
+  title: state.auth.title,
+});
 
-export default connect( mapStateToProps, { logout, loadUser })(Main)
+export default connect(mapStateToProps, { logout, loadUser })(Main);

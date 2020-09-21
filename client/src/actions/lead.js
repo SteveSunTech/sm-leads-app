@@ -60,18 +60,13 @@ export const updateSingleLead = (
 
 // update single lead
 export const deleteSingleLead = (leadID) => async (dispatch) => {
-  const config = {
-    headers: {
-      "Content-Type": "application/json",
-    },
-  };
-
   try {
     // console.log(body);
     // console.log(leadID);
     await axios.delete(`/api/lead/delete/${leadID}`);
 
     dispatch(setAlert(`删除成功！`, "success"));
+    return "success!";
   } catch (err) {
     console.log(err);
   }

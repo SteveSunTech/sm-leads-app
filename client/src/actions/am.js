@@ -48,12 +48,7 @@ export const upload = (wechat, status, checkedItem) => async (dispatch) => {
       )
     );
   } catch (err) {
-    console.log(err);
-    const errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
-    }
+    handleError(err, dispatch);
   }
 };
 
@@ -82,15 +77,7 @@ export const newBasic = (email, password, name, college) => async (
 
     dispatch(setAlert(`校园大使：${payload.name}， 创建成功！`, "success"));
   } catch (err) {
-    console.log(err);
-    if (err.response.data.errors) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
-      }
-    } else {
-      dispatch(setAlert(err, "error"));
-    }
+    handleError(err, dispatch);
   }
 };
 
@@ -99,19 +86,13 @@ export const getAllBasic = () => async (dispatch) => {
   try {
     const res = await axios.get("api/am/basic/index");
     // console.log(res.data.wechats)
-    return new Promise((resolve) => {
-      resolve(res.data.basics);
-    });
-  } catch (err) {
-    console.log(err);
-    if (err.response.data.errors) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
-      }
-    } else {
-      dispatch(setAlert(err, "error"));
+    if (res) {
+      return new Promise((resolve) => {
+        resolve(res.data.basics);
+      });
     }
+  } catch (err) {
+    handleError(err, dispatch);
   }
 };
 
@@ -124,12 +105,7 @@ export const getWechatIndex = () => async (dispatch) => {
       resolve(res.data.wechats);
     });
   } catch (err) {
-    console.log(err);
-    const errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
-    }
+    handleError(err, dispatch);
   }
 };
 
@@ -172,12 +148,7 @@ export const uploadLead = (
       )
     );
   } catch (err) {
-    console.log(err);
-    const errors = err.response.data.errors;
-
-    if (errors) {
-      errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
-    }
+    handleError(err, dispatch);
   }
 };
 
@@ -188,6 +159,22 @@ export const getCollegeIndexOfCurrentUser = () => async (dispatch) => {
       resolve(res);
     });
   } catch (err) {
-    console.log(err);
+    handleError(err, dispatch);
+  }
+};
+
+const handleError = (err, dispatch) => {
+  console.log(err);
+  if (err.response) {
+    if (err.response.data) {
+      if (err.response.data.errors) {
+        const errors = err.response.data.errors;
+        if (errors) {
+          errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
+        }
+      }
+    } else {
+      dispatch(setAlert(err, "error"));
+    }
   }
 };

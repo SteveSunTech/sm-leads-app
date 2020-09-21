@@ -121,6 +121,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Upload = ({
+  subAlert,
   uploadLead,
   getWechatIndex,
   getSingleLead,
@@ -326,6 +327,9 @@ const Upload = ({
     setOpen2(false);
   };
 
+  // edit lead dropdown
+  // const edit
+
   // lead change form
   const [formData2, setFormData2] = useState({
     wechat2: "",
@@ -502,11 +506,15 @@ const Upload = ({
   // delete single lead
   // **************************************************************
   const deleteLead = () => {
+    console.log(leadID);
     deleteSingleLead(leadID);
-
+    setTimeout(() => getTableData(), 1000);
     setOpen2(false);
-    getTableData();
   };
+
+  //***************************************************************
+  // Waiting to refresh table
+  // **************************************************************
 
   //***************************************************************
   // get college list belong to current user
@@ -561,8 +569,7 @@ const Upload = ({
   const [value, setValue] = useState();
   const getTableData = () => {
     getWechatIndex().then(function (data) {
-      // console.log(data)
-      if (data) {
+      if (data.length !== 0) {
         data.forEach((e) => {
           rows.push(
             createData(
@@ -579,6 +586,12 @@ const Upload = ({
           setValue("");
           setValue(rows);
         });
+      } else {
+        const table = document.getElementById("all-leads-table");
+        if (table.tBodies[0].rows.length === 1) {
+          table.removeChild(table.getElementsByTagName("tbody")[0]);
+          setValue([]);
+        }
       }
     });
   };
@@ -602,7 +615,7 @@ const Upload = ({
         Upload
       </Button>
       <TableContainer component={Paper}>
-        <Table className={classes.table} aria-label="simple table">
+        <Table className={classes.table} id="all-leads-table">
           <TableHead>
             <TableRow>
               <TableCell align="center"> 学校 </TableCell>
@@ -626,8 +639,42 @@ const Upload = ({
                     <TableCell align="center"> {e.country} </TableCell>
                     <TableCell align="center"> {e.created} </TableCell>
                     <TableCell align="center"> {e.update} </TableCell>
-                    <TableCell key={e.id} align="center">
-                      <Button
+                    <TableCell
+                      key={e.id}
+                      align="center"
+                      onMouseEnter={() => setLeadID(e.id)}
+                    >
+                      <FormControl
+                        variant="outlined"
+                        className={classes.formControl}
+                      >
+                        <InputLabel id="edit-single-lead">Edit</InputLabel>
+                        <Select
+                          labelId="edit-single-lead"
+                          id="edit-single-lead"
+                          label="Edit"
+                          value={""}
+                        >
+                          <MenuItem value="">
+                            <em>None</em>
+                          </MenuItem>
+                          <MenuItem
+                            onClick={() => {
+                              loadLeadDetail(e.id);
+                            }}
+                          >
+                            修改
+                          </MenuItem>
+                          <MenuItem
+                            onClick={async () => {
+                              setTimeout(() => deleteLead(), 2000);
+                            }}
+                          >
+                            删除
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                      {/* <Button
                         color="primary"
                         onClick={() => {
                           loadLeadDetail(e.id);
@@ -635,7 +682,7 @@ const Upload = ({
                         }}
                       >
                         更多
-                      </Button>
+                      </Button> */}
                     </TableCell>
                   </TableRow>
                 ))
@@ -740,13 +787,13 @@ const Upload = ({
                     value={status}
                     onChange={(e) => onChangeStatus(e)}
                   >
-                    <MenuItem value={"已购买"}> 已购买 </MenuItem>{" "}
-                    <MenuItem value={"未购买"}> 未购买 </MenuItem>{" "}
+                    <MenuItem value={"已购买"}> 已购买 </MenuItem>
+                    <MenuItem value={"未购买"}> 未购买 </MenuItem>
                     <MenuItem value={"无意向购买"}> 无意向购买 </MenuItem>
-                  </Select>{" "}
+                  </Select>
                   {/* <FormHelperText>必填*</FormHelperText> */}
                 </FormControl>
-              </div>{" "}
+              </div>
               {/* <Divider /> */}
               <div className={classes.formBlock}>
                 <FormControl
@@ -1037,7 +1084,11 @@ const Upload = ({
   );
 };
 
-export default connect(null, {
+const mapStateToProps = (state) => ({
+  subAlert: state.subAlert,
+});
+
+export default connect(mapStateToProps, {
   uploadLead,
   getWechatIndex,
   getSingleLead,
