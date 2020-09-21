@@ -35,7 +35,22 @@ router.post("/update/:id", auth, async (req, res) => {
       country,
       keywords,
       note,
+      intention,
     } = req.body;
+
+    // 计算follow up时间
+    // intention 1=7天后 2=3天后 2=2天后
+    let afterDays = "";
+
+    if (intention === "1") afterDays = "7";
+    else if (intention === "2") afterDays = "3";
+    else afterDays = "2";
+
+    const followUpDate = someDaysLater(afterDays);
+    let followUp = false;
+    if (intention) {
+      followUp = true;
+    }
 
     const collegeData = College.findOne({ name: college });
 
@@ -50,6 +65,8 @@ router.post("/update/:id", auth, async (req, res) => {
     lead.updateDateDisplay = date;
     lead.college = collegeData._id;
     lead.collegeDisplay = college;
+    lead.intention = intention;
+    lead.followUpDate = followUpDate;
 
     lead.save();
 
@@ -71,5 +88,13 @@ router.delete("/delete/:id", auth, async (req, res) => {
     console.log(err);
   }
 });
+
+const someDaysLater = (days) => {
+  const today = new Date();
+  today.setDate(today.getDate() + Number(days));
+  return (
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate()
+  );
+};
 
 module.exports = router;

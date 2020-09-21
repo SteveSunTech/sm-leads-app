@@ -118,7 +118,8 @@ export const uploadLead = (
   grade,
   country,
   otherKeywords,
-  note
+  note,
+  intention
 ) => async (dispatch) => {
   const config = {
     headers: {
@@ -135,6 +136,7 @@ export const uploadLead = (
     country,
     otherKeywords,
     note,
+    intention,
   });
 
   try {

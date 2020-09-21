@@ -35,7 +35,7 @@ import LayersIcon from "@material-ui/icons/Layers";
 // import AssignmentIcon from '@material-ui/icons/Assignment';
 // import SchoolIcon from "@material-ui/icons/School";
 import ImportContactsIcon from "@material-ui/icons/ImportContacts";
-import MenuItem from "@material-ui/core/Menu";
+// import MenuItem from "@material-ui/core/Menu";
 
 // import Deposits from './Deposits';
 // import Orders from './Orders';
@@ -46,6 +46,7 @@ import Dashboard from "./amDashboard/Main";
 import BasicManage from "./BasicManage";
 import AmLeads from "./AmLeads";
 import SubAlert from "../ui/SubAlert";
+import LeadFollowUp from "./LeadFollowUp";
 
 function Copyright() {
   return (
@@ -322,6 +323,8 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
             <BasicManage />
           ) : mainComponent === "All Leads" ? (
             <AmLeads />
+          ) : mainComponent === "Follow Up" ? (
+            <LeadFollowUp />
           ) : null}
           <Box pt={4}>
             <Copyright />

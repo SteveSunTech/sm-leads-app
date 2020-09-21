@@ -23,7 +23,8 @@ export const updateSingleLead = (
   country,
   keywords,
   note,
-  leadID
+  leadID,
+  intention
 ) => async (dispatch) => {
   const config = {
     headers: {
@@ -39,6 +40,7 @@ export const updateSingleLead = (
     country,
     keywords,
     note,
+    intention,
   });
 
   try {

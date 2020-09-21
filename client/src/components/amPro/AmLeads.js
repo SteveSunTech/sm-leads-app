@@ -25,6 +25,7 @@ import Paper from "@material-ui/core/Paper";
 // import FormHelperText from '@material-ui/core/FormHelperText';
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import FormLabel from "@material-ui/core/FormLabel";
+import Box from "@material-ui/core/Box";
 
 import { uploadLead } from "../../actions/am";
 import { Checkbox, FormGroup } from "@material-ui/core";
@@ -144,6 +145,7 @@ const Upload = ({
     country: "",
     otherKeywords: "",
     note: "",
+    intention: "",
   });
 
   const {
@@ -154,13 +156,21 @@ const Upload = ({
     country,
     otherKeywords,
     note,
+    intention,
   } = formData;
 
-  const onChangeStatus = (e) =>
+  const onChangeStatus = (e) => {
     setFormData({
       ...formData,
       status: e.target.value,
     });
+    if (e.target.value === "未购买") {
+      setIntentionDisplay("inline");
+      setPurchaseIntention("");
+    } else {
+      setIntentionDisplay("none");
+    }
+  };
 
   const onChangeWeChat = (e) =>
     setFormData({
@@ -230,7 +240,8 @@ const Upload = ({
       grade,
       country,
       otherKeywords,
-      note
+      note,
+      intention
     );
 
     setOpen(false);
@@ -246,6 +257,7 @@ const Upload = ({
     setCollege("");
     setCountry("");
     setGrade("");
+    setPurchaseIntention("");
     setFormData({
       wechat: "",
       college: "",
@@ -267,6 +279,7 @@ const Upload = ({
 
   const handleClose = () => {
     setOpen(false);
+    setIntentionDisplay("none");
   };
 
   // new lead form college dropdown
@@ -325,6 +338,7 @@ const Upload = ({
 
   const handleClose2 = () => {
     setOpen2(false);
+    setIntentionDisplay2("none");
   };
 
   // edit lead dropdown
@@ -339,6 +353,7 @@ const Upload = ({
     country2: "",
     otherKeywords2: "",
     note2: "",
+    intention2: "",
   });
 
   const {
@@ -349,6 +364,7 @@ const Upload = ({
     country2,
     otherKeywords2,
     note2,
+    intention2,
   } = formData2;
 
   // change lead form college dropdown
@@ -395,6 +411,12 @@ const Upload = ({
       ...formData2,
       status2: e.target.value,
     });
+    if (e.target.value === "未购买") {
+      setIntentionDisplay2("inline");
+      setPurchaseIntention2("");
+    } else {
+      setIntentionDisplay2("none");
+    }
   };
 
   const onChangeWeChat2 = (e) =>
@@ -425,7 +447,8 @@ const Upload = ({
       country2,
       otherKeywords2,
       note2,
-      leadID
+      leadID,
+      intention2
     );
 
     setOpen2(false);
@@ -481,6 +504,15 @@ const Upload = ({
         note2: dataCash.note,
       });
 
+      if (data.intention) {
+        setIntentionDisplay2("inline");
+        setPurchaseIntention2(data.intention);
+        setFormData2({
+          ...formData2,
+          intention2: data.intention,
+        });
+      }
+
       handleOpen2();
     });
   };
@@ -506,15 +538,34 @@ const Upload = ({
   // delete single lead
   // **************************************************************
   const deleteLead = () => {
-    console.log(leadID);
     deleteSingleLead(leadID);
-    setTimeout(() => getTableData(), 1000);
+    setTimeout(() => getTableData(), 200);
     setOpen2(false);
   };
 
   //***************************************************************
-  // Waiting to refresh table
+  // 购买意向
   // **************************************************************
+
+  const [purchaseIntention, setPurchaseIntention] = useState("");
+  const [intentionDisplay, setIntentionDisplay] = useState("none");
+  const onChangePurchaseIntention = (e) => {
+    setPurchaseIntention(e.target.value);
+    setFormData({
+      ...formData,
+      intention: e.target.value,
+    });
+  };
+
+  const [purchaseIntention2, setPurchaseIntention2] = useState("");
+  const [intentionDisplay2, setIntentionDisplay2] = useState("none");
+  const onChangePurchaseIntention2 = (e) => {
+    setPurchaseIntention2(e.target.value);
+    setFormData2({
+      ...formData2,
+      intention2: e.target.value,
+    });
+  };
 
   //***************************************************************
   // get college list belong to current user
@@ -722,6 +773,9 @@ const Upload = ({
                     onChange={collgeChange}
                     label="college"
                   >
+                    <MenuItem value="">
+                      <em>无信息</em>
+                    </MenuItem>
                     {allCollegeValue
                       ? allCollegeValue.map((e) => (
                           <MenuItem
@@ -744,6 +798,9 @@ const Upload = ({
                     onChange={gradeChange}
                     label="grade"
                   >
+                    <MenuItem value="">
+                      <em>无信息</em>
+                    </MenuItem>
                     <MenuItem value={"大一"}> 大一 </MenuItem>{" "}
                     <MenuItem value={"大二"}> 大二 </MenuItem>{" "}
                     <MenuItem value={"大三"}> 大三 </MenuItem>{" "}
@@ -762,6 +819,9 @@ const Upload = ({
                     onChange={countryChange}
                     label="country"
                   >
+                    <MenuItem value="">
+                      <em>无信息</em>
+                    </MenuItem>
                     <MenuItem value={"国内"}> 国内 </MenuItem>
                     <MenuItem value={"美国"}> 美国 </MenuItem>{" "}
                   </Select>
@@ -791,8 +851,30 @@ const Upload = ({
                     <MenuItem value={"未购买"}> 未购买 </MenuItem>
                     <MenuItem value={"无意向购买"}> 无意向购买 </MenuItem>
                   </Select>
-                  {/* <FormHelperText>必填*</FormHelperText> */}
                 </FormControl>
+                <Box display={intentionDisplay}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel id="demo-simple-select-label">
+                      购买意向
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={purchaseIntention}
+                      onChange={(e) => onChangePurchaseIntention(e)}
+                    >
+                      <MenuItem value={"1"}>
+                        还未询问，回应冷淡（一周后follow）
+                      </MenuItem>
+                      <MenuItem value={"2"}>
+                        询问较多问题，有明显兴趣（3天后follow）
+                      </MenuItem>
+                      <MenuItem value={"3"}>
+                        强烈购买意向，马上购买（2天后follow）
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
               </div>
               {/* <Divider /> */}
               <div className={classes.formBlock}>
@@ -1013,6 +1095,29 @@ const Upload = ({
                   </Select>
                   {/* <FormHelperText>必填*</FormHelperText> */}
                 </FormControl>
+                <Box display={intentionDisplay2}>
+                  <FormControl className={classes.formControl}>
+                    <InputLabel id="demo-simple-select-label">
+                      购买意向
+                    </InputLabel>
+                    <Select
+                      labelId="demo-simple-select-label"
+                      id="demo-simple-select"
+                      value={purchaseIntention2}
+                      onChange={(e) => onChangePurchaseIntention2(e)}
+                    >
+                      <MenuItem value={"1"}>
+                        还未询问，回应冷淡（一周后follow）
+                      </MenuItem>
+                      <MenuItem value={"2"}>
+                        询问较多问题，有明显兴趣（3天后follow）
+                      </MenuItem>
+                      <MenuItem value={"3"}>
+                        强烈购买意向，马上购买（2天后follow）
+                      </MenuItem>
+                    </Select>
+                  </FormControl>
+                </Box>
               </div>
               {/* <Divider /> */}
               <div className={classes.formBlock}>

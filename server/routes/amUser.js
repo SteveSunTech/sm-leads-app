@@ -115,6 +115,21 @@ router.post("/lead/new", auth, async (req, res) => {
   const country = req.body.country;
   const otherKeywords = req.body.otherKeywords;
   const note = req.body.note;
+  const intention = req.body.intention;
+
+  // 计算follow up时间
+  // intention 1=7天后 2=3天后 2=2天后
+  let afterDays = "";
+
+  if (intention === "1") afterDays = "7";
+  else if (intention === "2") afterDays = "3";
+  else afterDays = "2";
+
+  const followUpDate = someDaysLater(afterDays);
+  let followUp = false;
+  if (intention) {
+    followUp = true;
+  }
 
   if (wechatId === "") {
     return res.status(400).json({ errors: [{ msg: "请填写微信号！" }] });
@@ -152,6 +167,9 @@ router.post("/lead/new", auth, async (req, res) => {
       note,
       createdDateDisplay: date,
       updateDateDisplay: date,
+      intention,
+      followUpDate,
+      followUp,
     });
 
     wechatNew.save();
@@ -195,5 +213,13 @@ router.get("/college/index/", auth, async (req, res) => {
 // router.get("/", auth, (req, res) => {
 //   res.send("ok");
 // });
+
+const someDaysLater = (days) => {
+  const today = new Date();
+  today.setDate(today.getDate() + Number(days));
+  return (
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate()
+  );
+};
 
 module.exports = router;

@@ -83,6 +83,15 @@ const WechatNewSchema = new Schema({
   note: {
     type: String,
   },
+  intention: {
+    type: Number,
+  },
+  followUp: {
+    type: Boolean,
+  },
+  followUpDate: {
+    type: String,
+  },
 });
 
 module.exports = WechatNew = mongoose.model("WechatNew", WechatNewSchema);
