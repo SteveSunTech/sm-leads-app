@@ -83,7 +83,7 @@ router.delete("/delete/:id", auth, async (req, res) => {
   try {
     await WechatNew.deleteOne({ _id: req.params.id });
 
-    res.json("Success");
+    res.json({ _id: req.params.id });
   } catch (err) {
     console.log(err);
   }

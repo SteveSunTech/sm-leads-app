@@ -1,5 +1,6 @@
 import axios from "axios";
 import { setAlert } from "./subAlert";
+import { AM_UPDATE_SINGLE_LEAD, AM_DELETE_SINGLE_LEAD } from "./types";
 
 // get single lead
 export const getSingleLead = (id) => async (dispatch) => {
@@ -49,6 +50,11 @@ export const updateSingleLead = (
     const res = await axios.post(`/api/lead/update/${leadID}`, body, config);
     const payload = res.data;
 
+    await dispatch({
+      type: AM_UPDATE_SINGLE_LEAD,
+      payload,
+    });
+
     dispatch(
       setAlert(
         `“微信：${payload.wechatId}，状态：${payload.status}” 更新成功！`,
@@ -60,12 +66,18 @@ export const updateSingleLead = (
   }
 };
 
-// update single lead
+// delete single lead
 export const deleteSingleLead = (leadID) => async (dispatch) => {
   try {
     // console.log(body);
     // console.log(leadID);
-    await axios.delete(`/api/lead/delete/${leadID}`);
+    const res = await axios.delete(`/api/lead/delete/${leadID}`);
+    const payload = res.data;
+
+    await dispatch({
+      type: AM_DELETE_SINGLE_LEAD,
+      payload,
+    });
 
     dispatch(setAlert(`删除成功！`, "success"));
     return "success!";

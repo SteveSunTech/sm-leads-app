@@ -17,8 +17,6 @@ import Select from "@material-ui/core/Select";
 import InputLabel from "@material-ui/core/InputLabel";
 
 import { newBasic, getAllBasic } from "../../actions/am";
-import { getCollegeIndexOfCurrentUser } from "../../actions/am";
-// import Modal from '../ui/Modal';
 
 const useStyles = makeStyles((theme) => ({
   new: {
@@ -60,10 +58,12 @@ const useStyles = makeStyles((theme) => ({
 // };
 
 const BasicManage = ({
+  // state
   basics,
+  allColleges,
+  // action
   newBasic,
   getAllBasic,
-  getCollegeIndexOfCurrentUser,
 }) => {
   const classes = useStyles();
 
@@ -83,8 +83,6 @@ const BasicManage = ({
     });
 
   // new basic form college dropdown
-  let rowsForCollege = [];
-  const [allCollegeValue, setAllCollegeValue] = useState();
   const [collegeDropDown2, setCollege2] = useState("");
   const collgeChange2 = (e) => {
     setCollege2(e.target.value);
@@ -93,31 +91,6 @@ const BasicManage = ({
       college: e.target.value,
     });
   };
-
-  const getCollegeList = () => {
-    getCollegeIndexOfCurrentUser().then(function (data) {
-      // console.log(data.data);
-      if (data.data) {
-        var bar = new Promise((resolve, reject) => {
-          data.data.forEach(async (e) => {
-            rowsForCollege.push(createAllCollegeDropdownData(e.collegeDisplay));
-            if (data.data.length === rowsForCollege.length) resolve();
-          });
-        });
-
-        bar.then(() => {
-          setAllCollegeValue("");
-          setAllCollegeValue(rowsForCollege);
-        });
-      }
-    });
-  };
-
-  function createAllCollegeDropdownData(name) {
-    return {
-      name,
-    };
-  }
 
   // basic list
   const [tableValue, setTableValue] = useState();
@@ -131,7 +104,6 @@ const BasicManage = ({
 
   // 性能需要提升
   useEffect(() => {
-    getCollegeList();
     getAllBasic().then(function (data) {
       // console.log(data)
       // data.forEach(e => {
@@ -237,13 +209,10 @@ const BasicManage = ({
               onChange={(e) => collgeChange2(e)}
               label="college"
             >
-              {allCollegeValue
-                ? allCollegeValue.map((e) => (
-                    <MenuItem
-                      key={Math.floor(Math.random() * 100000)}
-                      value={e.name}
-                    >
-                      {e.name}
+              {allColleges
+                ? allColleges.map((e) => (
+                    <MenuItem key={e._id} value={e.collegeDisplay}>
+                      {e.collegeDisplay}
                     </MenuItem>
                   ))
                 : null}
@@ -301,10 +270,10 @@ const BasicManage = ({
 
 const mapStateToProps = (state) => ({
   basics: state.amNewBasic.basic,
+  allColleges: state.am.allColleges,
 });
 
 export default connect(mapStateToProps, {
   newBasic,
   getAllBasic,
-  getCollegeIndexOfCurrentUser,
 })(BasicManage);

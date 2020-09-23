@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, Fragment } from "react";
 import { connect } from "react-redux";
 
 import TextField from "@material-ui/core/TextField";
@@ -26,13 +26,11 @@ import Paper from "@material-ui/core/Paper";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import FormLabel from "@material-ui/core/FormLabel";
 import Box from "@material-ui/core/Box";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
 
 import { uploadLead } from "../../actions/am";
-import { Checkbox, FormGroup } from "@material-ui/core";
-import { getWechatIndex } from "../../actions/am";
-import { getCollegeIndexOfCurrentUser } from "../../actions/am";
-// import { set } from "mongoose";
-import { getSingleLead } from "../../actions/lead";
+import { Checkbox, FormGroup, IconButton } from "@material-ui/core";
 import { updateSingleLead } from "../../actions/lead";
 import { deleteSingleLead } from "../../actions/lead";
 
@@ -45,12 +43,12 @@ const useStyles = makeStyles((theme) => ({
     // display: 'flex',
     // flexDirection: 'column',
   },
-  modalPopupButton: {
+  uploadModalPopupButton: {
     marginTop: "30px",
     marginBottom: "30px",
     border: "none",
     color: "white",
-    backgroundColor: "#a000a0",
+    backgroundColor: theme.palette.primary.main,
     // width: '80px',
     height: "50px",
     borderRadius: "5px",
@@ -85,18 +83,15 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: "40%",
   },
   modalInnerUpload2: {
-    backgroundColor: "green",
+    backgroundColor: theme.palette.green.main,
     color: "white",
     "&:hover": {
-      backgroundColor: "lightgreen",
+      backgroundColor: theme.palette.green.light,
     },
   },
   modalInnerUpload3: {
-    backgroundColor: "red",
+    backgroundColor: theme.palette.cancel.main,
     color: "white",
-    "&:hover": {
-      backgroundColor: "lightpink",
-    },
   },
   modal: {
     display: "flex",
@@ -122,13 +117,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Upload = ({
+  // State
+  allLeads,
+  allColleges,
+  // Action
   subAlert,
   uploadLead,
-  getWechatIndex,
-  getSingleLead,
   updateSingleLead,
   deleteSingleLead,
-  getCollegeIndexOfCurrentUser,
 }) => {
   const classes = useStyles();
 
@@ -245,8 +241,6 @@ const Upload = ({
     );
 
     setOpen(false);
-
-    getTableData();
   };
 
   // upload modal popup
@@ -333,6 +327,7 @@ const Upload = ({
   const [open2, setOpen2] = useState(false);
 
   const handleOpen2 = () => {
+    setPurchaseIntention("");
     setOpen2(true);
   };
 
@@ -354,6 +349,7 @@ const Upload = ({
     otherKeywords2: "",
     note2: "",
     intention2: "",
+    leadID: "",
   });
 
   const {
@@ -365,6 +361,7 @@ const Upload = ({
     otherKeywords2,
     note2,
     intention2,
+    leadID,
   } = formData2;
 
   // change lead form college dropdown
@@ -416,6 +413,7 @@ const Upload = ({
       setPurchaseIntention2("");
     } else {
       setIntentionDisplay2("none");
+      setPurchaseIntention2("");
     }
   };
 
@@ -452,68 +450,82 @@ const Upload = ({
     );
 
     setOpen2(false);
-    getTableData();
   };
 
   //***************************************************************
   // lead detail
   // **************************************************************
 
-  const [leadData, setLeadData] = useState({});
-  const [leadID, setLeadID] = useState("");
+  const [leadDetail, setLeadDetail] = useState({
+    wechatID: "",
+    createdTime: "",
+    updatedTime: "",
+  });
 
   const loadLeadDetail = (id) => {
-    getSingleLead(id).then(function (data) {
-      setLeadData({});
-
+    console.log(id);
+    // Find exact lead in redux
+    let lead = null;
+    var findSingleLead = new Promise((resolve, reject) => {
+      allLeads.forEach((value) => {
+        if (value._id === id) {
+          lead = value;
+          resolve();
+        }
+      });
+    });
+    findSingleLead.then(() => {
+      // Setup Keywords
       let keywordsChange = "";
-      if (!data.keywords) {
-        keywordsChange = data.otherKeywords;
-      } else if (!data.otherKeywords) {
-        keywordsChange = data.keywords;
-      } else if (data.keywords && data.otherKeywords) {
-        keywordsChange = data.keywords + " " + data.otherKeywords;
+      if (!lead.keywords) {
+        keywordsChange = lead.otherKeywords;
+      } else if (!lead.otherKeywords) {
+        keywordsChange = lead.keywords;
+      } else if (lead.keywords && lead.otherKeywords) {
+        keywordsChange = lead.keywords + " " + lead.otherKeywords;
       }
 
-      let dataCash = {
-        wechat: data.wechatId,
-        college: data.collegeDisplay,
-        country: data.country,
-        grade: data.grade,
-        group: data.groupDisplay,
-        status: data.status,
-        create: data.createdDateDisplay,
-        update: data.updateDateDisplay,
-        keywordsChange,
-        note: data.note,
-      };
-
-      setCollege2(dataCash.college);
-      setGrade2(dataCash.grade);
-      setCountry2(dataCash.country);
-      setStatus2(dataCash.status);
-      setLeadData(dataCash);
-
-      setFormData2({
-        wechat2: dataCash.wechat,
-        status2: dataCash.status,
-        college2: dataCash.college,
-        grade2: dataCash.grade,
-        country2: dataCash.country,
-        otherKeywords2: dataCash.keywordsChange,
-        note2: dataCash.note,
-      });
-
-      if (data.intention) {
+      // Set form data for DISPLAY
+      setCollege2(lead.collegeDisplay);
+      setGrade2(lead.grade);
+      setCountry2(lead.country);
+      setStatus2(lead.status);
+      if (lead.intention) {
         setIntentionDisplay2("inline");
-        setPurchaseIntention2(data.intention);
+        setPurchaseIntention2(lead.intention);
         setFormData2({
           ...formData2,
-          intention2: data.intention,
+          intention2: lead.intention,
         });
       }
+      console.log(typeof lead.intention);
+      if (lead.status === "未购买") {
+        setIntentionDisplay2("inline");
+      }
+      // Set text field content
+      setLeadDetail({
+        wechatID: lead.wechatId,
+        createdTime: lead.createdDateDisplay,
+        updatedTime: lead.updateDateDisplay,
+        keywords: lead.keywordsChange,
+        note: lead.note,
+      });
 
-      handleOpen2();
+      // Setup Submit form
+      setFormData2(
+        {
+          ...formData2,
+          wechat2: lead.wechatId,
+          status2: lead.status,
+          college2: lead.collegeDisplay,
+          grade2: lead.grade,
+          country2: lead.country,
+          otherKeywords2: keywordsChange,
+          note2: lead.note,
+          leadID: lead._id,
+        },
+        handleOpen2()
+      );
     });
   };
 
@@ -537,9 +549,8 @@ const Upload = ({
   //***************************************************************
   // delete single lead
   // **************************************************************
-  const deleteLead = () => {
-    deleteSingleLead(leadID);
-    setTimeout(() => getTableData(), 200);
+  const deleteLead = (id) => {
+    deleteSingleLead(id);
     setOpen2(false);
   };
 
@@ -571,88 +582,11 @@ const Upload = ({
   // get college list belong to current user
   // **************************************************************
 
-  function createAllCollegeDropdownData(name) {
-    return {
-      name,
-    };
-  }
-
-  let rowsForCollege = [];
-
-  const [allCollegeValue, setAllCollegeValue] = useState();
-
-  const getCollegeList = () => {
-    getCollegeIndexOfCurrentUser().then(function (data) {
-      // console.log(data.data);
-      if (data.data) {
-        var bar = new Promise((resolve, reject) => {
-          data.data.forEach(async (e) => {
-            rowsForCollege.push(createAllCollegeDropdownData(e.collegeDisplay));
-            if (data.data.length === rowsForCollege.length) resolve();
-          });
-        });
-
-        bar.then(() => {
-          setAllCollegeValue("");
-          setAllCollegeValue(rowsForCollege);
-        });
-      }
-    });
-  };
-
   //***************************************************************
   // lead index
   // **************************************************************
 
-  // table data
-  function createData(id, college, wechat, status, country, created, update) {
-    return {
-      id,
-      college,
-      wechat,
-      status,
-      country,
-      created,
-      update,
-    };
-  }
-
-  const [value, setValue] = useState();
-  const getTableData = () => {
-    getWechatIndex().then(function (data) {
-      if (data.length !== 0) {
-        data.forEach((e) => {
-          rows.push(
-            createData(
-              e._id,
-              e.collegeDisplay,
-              // e.groupDisplay,
-              e.wechatId,
-              e.status,
-              e.country,
-              e.createdDateDisplay,
-              e.updateDateDisplay
-            )
-          );
-          setValue("");
-          setValue(rows);
-        });
-      } else {
-        const table = document.getElementById("all-leads-table");
-        if (table.tBodies[0].rows.length === 1) {
-          table.removeChild(table.getElementsByTagName("tbody")[0]);
-          setValue([]);
-        }
-      }
-    });
-  };
-  const rows = [];
-
-  // 性能需要提升
-  useEffect(() => {
-    getTableData();
-    getCollegeList();
-  }, []);
+  // useEffect(() => {}, []);
 
   return (
     <Fragment>
@@ -660,13 +594,13 @@ const Upload = ({
         onClick={handleOpen}
         variant="contained"
         color="primary"
-        className={classes.modalPopupButton}
+        className={classes.uploadModalPopupButton}
       >
         <BackupIcon className={classes.uploadIcon} />
         Upload
       </Button>
       <TableContainer component={Paper}>
-        <Table className={classes.table} id="all-leads-table">
+        <Table className={classes.table} size="medium" id="all-leads-table">
           <TableHead>
             <TableRow>
               <TableCell align="center"> 学校 </TableCell>
@@ -679,23 +613,35 @@ const Upload = ({
             </TableRow>
           </TableHead>
           <TableBody>
-            {value
-              ? value.map((e) => (
-                  <TableRow key={e.id}>
+            {allLeads
+              ? allLeads.map((e) => (
+                  <TableRow key={e._id}>
                     <TableCell component="th" scope="row" align="center">
-                      {e.college}
+                      {e.collegeDisplay}
                     </TableCell>
-                    <TableCell align="center"> {e.wechat} </TableCell>
+                    <TableCell align="center"> {e.wechatId} </TableCell>
                     <TableCell align="center"> {e.status} </TableCell>
                     <TableCell align="center"> {e.country} </TableCell>
-                    <TableCell align="center"> {e.created} </TableCell>
-                    <TableCell align="center"> {e.update} </TableCell>
-                    <TableCell
-                      key={e.id}
-                      align="center"
-                      onMouseEnter={() => setLeadID(e.id)}
-                    >
-                      <FormControl
+                    <TableCell align="center">{e.createdDateDisplay}</TableCell>
+                    <TableCell align="center">{e.updateDateDisplay}</TableCell>
+                    <TableCell align="center">
+                      <Box
+                        component="span"
+                        onClick={() => {
+                          loadLeadDetail(e._id);
+                        }}
+                      >
+                        <IconButton>
+                          <EditIcon color="primary" fontSize="small" />
+                        </IconButton>
+                      </Box>
+                      <Box component="span" onClick={() => deleteLead(e._id)}>
+                        <IconButton>
+                          <DeleteIcon color="secondary" fontSize="small" />
+                        </IconButton>
+                      </Box>
+
+                      {/* <FormControl
                         variant="outlined"
                         className={classes.formControl}
                       >
@@ -711,7 +657,7 @@ const Upload = ({
                           </MenuItem>
                           <MenuItem
                             onClick={() => {
-                              loadLeadDetail(e.id);
+                              loadLeadDetail(e._id);
                             }}
                           >
                             修改
@@ -724,7 +670,7 @@ const Upload = ({
                             删除
                           </MenuItem>
                         </Select>
-                      </FormControl>
+                      </FormControl> */}
                       {/* <Button
                         color="primary"
                         onClick={() => {
@@ -776,13 +722,10 @@ const Upload = ({
                     <MenuItem value="">
                       <em>无信息</em>
                     </MenuItem>
-                    {allCollegeValue
-                      ? allCollegeValue.map((e) => (
-                          <MenuItem
-                            key={Math.floor(Math.random() * 100000)}
-                            value={e.name}
-                          >
-                            {e.name}
+                    {allColleges
+                      ? allColleges.map((e) => (
+                          <MenuItem key={e._id} value={e.collegeDisplay}>
+                            {e.collegeDisplay}
                           </MenuItem>
                         ))
                       : null}
@@ -1022,13 +965,10 @@ const Upload = ({
                     onChange={(e) => collgeChange2(e)}
                     label="college"
                   >
-                    {allCollegeValue
-                      ? allCollegeValue.map((e) => (
-                          <MenuItem
-                            key={Math.floor(Math.random() * 100000)}
-                            value={e.name}
-                          >
-                            {e.name}
+                    {allColleges
+                      ? allColleges.map((e) => (
+                          <MenuItem key={e._id} value={e.collegeDisplay}>
+                            {e.collegeDisplay}
                           </MenuItem>
                         ))
                       : null}
@@ -1077,7 +1017,7 @@ const Upload = ({
                   onChange={(e) => onChangeWeChat2(e)}
                   required
                   // variant="outlined"
-                  defaultValue={leadData.wechat}
+                  defaultValue={leadDetail.wechatID}
                 />
                 {/* <FormHelperText>必填*</FormHelperText> */}
                 {/* </FormControl> */}
@@ -1130,7 +1070,7 @@ const Upload = ({
                   placeholder="关键词"
                   className={classes.uploadTextarea}
                   onChange={onChangeUploadOtherKeywords2}
-                  defaultValue={leadData.keywordsChange}
+                  defaultValue={leadDetail.keywords}
                 />
               </div>
               {/* <Divider /> */}
@@ -1144,13 +1084,13 @@ const Upload = ({
                   placeholder="备注信息"
                   className={classes.uploadTextarea}
                   onChange={onChangeUploadTextarea2}
-                  defaultValue={leadData.note}
+                  defaultValue={leadDetail.note}
                 />
               </div>
               <div className={classes.formBlock}>
-                创建时间：{leadData.create}
+                创建时间：{leadDetail.createdTime}
                 <span className={classes.updateTime}>
-                  最后更新：{leadData.update}
+                  最后更新：{leadDetail.updatedTime}
                 </span>
               </div>
               <div className={classes.formBlockLast}>
@@ -1174,9 +1114,9 @@ const Upload = ({
                     // color="primary"
                     className={classes.modalInnerUpload3}
                     type="button"
-                    onClick={() => deleteLead()}
+                    onClick={() => setOpen2(false)}
                   >
-                    删除
+                    关闭
                   </Button>
                 </div>
               </div>
@@ -1190,14 +1130,12 @@ const Upload = ({
 };
 
 const mapStateToProps = (state) => ({
-  subAlert: state.subAlert,
+  allColleges: state.am.allColleges,
+  allLeads: state.am.allLeads,
 });
 
 export default connect(mapStateToProps, {
   uploadLead,
-  getWechatIndex,
-  getSingleLead,
   updateSingleLead,
   deleteSingleLead,
-  getCollegeIndexOfCurrentUser,
 })(Upload);

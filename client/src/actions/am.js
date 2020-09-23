@@ -1,7 +1,12 @@
 import axios from "axios";
 import { setAlert } from "./subAlert";
 
-import { AM_BASIC_NEW } from "./types";
+import {
+  AM_BASIC_NEW,
+  AM_LOAD_ALL_LEADS,
+  AM_LOAD_ALL_COLLEGES,
+  AM_UPLOAD_SINGLE_LEAD,
+} from "./types";
 
 // // Lookup wechat from database
 // export const single = ( wechat ) => async dispatch => {
@@ -96,19 +101,6 @@ export const getAllBasic = () => async (dispatch) => {
   }
 };
 
-// get all wechat lead account belong to current user
-export const getWechatIndex = () => async (dispatch) => {
-  try {
-    const res = await axios.get("/api/am/lead/index");
-    // console.log(res.data.wechats)
-    return new Promise((resolve) => {
-      resolve(res.data.wechats);
-    });
-  } catch (err) {
-    handleError(err, dispatch);
-  }
-};
-
 // Upload wechat client to database
 export const uploadLead = (
   wechat,
@@ -143,23 +135,17 @@ export const uploadLead = (
     const res = await axios.post("/api/am/lead/new", body, config);
     const payload = res.data.wechatNew;
 
+    await dispatch({
+      type: AM_UPLOAD_SINGLE_LEAD,
+      payload,
+    });
+
     dispatch(
       setAlert(
         `“微信：${payload.wechatId}，状态：${payload.status}” 上传成功！`,
         "success"
       )
     );
-  } catch (err) {
-    handleError(err, dispatch);
-  }
-};
-
-export const getCollegeIndexOfCurrentUser = () => async (dispatch) => {
-  try {
-    const res = axios.get(`/api/am/college/index/`);
-    return new Promise((resolve) => {
-      resolve(res);
-    });
   } catch (err) {
     handleError(err, dispatch);
   }
@@ -178,5 +164,55 @@ const handleError = (err, dispatch) => {
     } else {
       dispatch(setAlert(err, "error"));
     }
+  }
+};
+
+// get all leads belong to current am
+export const getAllLeads = () => async (dispatch) => {
+  try {
+    const res = await axios.get("/api/am/lead/index");
+    let allLeads = res.data.wechats;
+    let payload = [];
+
+    var processing = new Promise((resolve, reject) => {
+      allLeads.forEach((value, index, array) => {
+        payload.push(value);
+        if (index === array.length - 1) resolve();
+      });
+    });
+
+    processing.then(() => {
+      dispatch({
+        type: AM_LOAD_ALL_LEADS,
+        payload,
+      });
+    });
+  } catch (err) {
+    handleError(err, dispatch);
+  }
+};
+
+// get all Colleges belong to current am
+export const getAllColleges = () => async (dispatch) => {
+  try {
+    const res = await axios.get("/api/am/college/index/");
+    const allColleges = res.data;
+    let payload = [];
+
+    var processing = new Promise((resolve, reject) => {
+      allColleges.forEach((value, index, array) => {
+        payload.push(value);
+        if (index === array.length - 1) resolve();
+      });
+    });
+
+    processing.then(() => {
+      dispatch({
+        type: AM_LOAD_ALL_COLLEGES,
+        payload,
+      });
+    });
+  } catch (err) {
+    handleError(err, dispatch);
   }
 };

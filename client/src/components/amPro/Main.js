@@ -1,10 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-// import { Button } from '@material-ui/core';
-// import { mainListItems, secondaryListItems } from "./listItems";
-import { secondaryListItems } from "./listItems";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -21,24 +18,15 @@ import Container from "@material-ui/core/Container";
 import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
-// import NotificationsIcon from '@material-ui/icons/Notifications';
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
-// import ListSubheader from '@material-ui/core/ListSubheader';
 import DashboardIcon from "@material-ui/icons/Dashboard";
-// import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-// import PeopleIcon from "@material-ui/icons/People";
-import BarChartIcon from "@material-ui/icons/BarChart";
-import LayersIcon from "@material-ui/icons/Layers";
-// import AssignmentIcon from '@material-ui/icons/Assignment';
-// import SchoolIcon from "@material-ui/icons/School";
 import ImportContactsIcon from "@material-ui/icons/ImportContacts";
-// import MenuItem from "@material-ui/core/Menu";
-
-// import Deposits from './Deposits';
-// import Orders from './Orders';
+import AssignmentIcon from "@material-ui/icons/Assignment";
+import SchoolIcon from "@material-ui/icons/School";
+import PeopleIcon from "@material-ui/icons/People";
 
 import { loadUser } from "../../actions/auth";
 import { logout } from "../../actions/auth";
@@ -47,6 +35,8 @@ import BasicManage from "./BasicManage";
 import AmLeads from "./AmLeads";
 import SubAlert from "../ui/SubAlert";
 import LeadFollowUp from "./LeadFollowUp";
+import { getAllLeads } from "../../actions/am";
+import { getAllColleges } from "../../actions/am";
 
 function Copyright() {
   return (
@@ -142,7 +132,21 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Main = ({ user, logout, isAuthenticated, title }) => {
+const Main = ({
+  user,
+  logout,
+  isAuthenticated,
+  title,
+  getAllLeads,
+  getAllColleges,
+}) => {
+  useEffect(() => {
+    getAllLeads();
+    getAllColleges();
+  }, [user]);
+
+  const test = "";
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -161,7 +165,7 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
     setSelectedItem(selectedIndex);
   };
 
-  // authentication
+  // Authentication
   if (isAuthenticated) {
     if (title === "basic") {
       return <Redirect to="/ambassador" />;
@@ -265,9 +269,9 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
             selected={selectedItem === 1.5}
           >
             <ListItemIcon>
-              <ImportContactsIcon />
+              <AssignmentIcon />
             </ListItemIcon>
-            <ListItemText primary="Follow Up" />
+            <ListItemText primary="Follow Up Leads" />
           </ListItem>
           <ListItem
             button
@@ -278,7 +282,7 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
             selected={selectedItem === 2}
           >
             <ListItemIcon>
-              <ImportContactsIcon />
+              <SchoolIcon />
             </ListItemIcon>
             <ListItemText primary="College" />
           </ListItem>
@@ -291,11 +295,11 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
             selected={selectedItem === 3}
           >
             <ListItemIcon>
-              <ImportContactsIcon />
+              <PeopleIcon />
             </ListItemIcon>
             <ListItemText primary="校园大使" />
           </ListItem>
-          <ListItem button>
+          {/* <ListItem button>
             <ListItemIcon>
               <BarChartIcon />
             </ListItemIcon>
@@ -306,10 +310,10 @@ const Main = ({ user, logout, isAuthenticated, title }) => {
               <LayersIcon />
             </ListItemIcon>
             <ListItemText primary="Integrations" />
-          </ListItem>
+          </ListItem> */}
         </List>
         <Divider />
-        <List>{secondaryListItems}</List>
+        {/* Add secondary list here is the future!  */}
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
@@ -341,4 +345,9 @@ const mapStateToProps = (state) => ({
   title: state.auth.title,
 });
 
-export default connect(mapStateToProps, { logout, loadUser })(Main);
+export default connect(mapStateToProps, {
+  logout,
+  loadUser,
+  getAllLeads,
+  getAllColleges,
+})(Main);
