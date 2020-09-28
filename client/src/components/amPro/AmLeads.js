@@ -13,7 +13,7 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-import BackupIcon from "@material-ui/icons/Backup";
+// import BackupIcon from "@material-ui/icons/Backup";
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Search } from "@material-ui/icons";
@@ -29,6 +29,7 @@ import NewLeadForm from "./leads/NewLeadForm";
 import { intentionOptions } from "../config/Leads";
 import useTable from "../reusable/useTable";
 import Controls from "../reusable/controls/Controls";
+import ConfirmDialog from "../reusable/ConfirmDialog";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -193,9 +194,17 @@ const AmLeads = ({
   //***************************************************************
   // delete single lead
   // **************************************************************
-  const deleteLead = (id) => {
+  const [confirmDialog, setConfirmDialog] = useState({
+    isOpen: false,
+    title: "",
+    subTitle: "",
+  });
+  const onDelete = (id) => {
     deleteSingleLead(id);
-    // setOpen2(false);
+    setConfirmDialog({
+      ...confirmDialog,
+      isOpen: false,
+    });
   };
 
   return (
@@ -255,7 +264,17 @@ const AmLeads = ({
                       </IconButton>
                     </Tooltip>
                   </Box>
-                  <Box component="span" onClick={() => deleteLead(item._id)}>
+                  <Box
+                    component="span"
+                    onClick={() => {
+                      setConfirmDialog({
+                        isOpen: true,
+                        title: "Are you sure to delete this Lead?",
+                        subTitle: "You can't undo this operation",
+                        onConfirm: () => onDelete(item._id),
+                      });
+                    }}
+                  >
                     <Tooltip title="删除" arrow>
                       <IconButton>
                         <DeleteIcon color="secondary" fontSize="small" />
@@ -290,6 +309,11 @@ const AmLeads = ({
           initialFValues={leadDetail}
         />
       </Popup>
+      {/* Delete Confirm */}
+      <ConfirmDialog
+        confirmDialog={confirmDialog}
+        setConfirmDialog={setConfirmDialog}
+      />
     </Fragment>
   );
 };

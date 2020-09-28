@@ -272,7 +272,7 @@ const LeadDetailForm = ({
           <div className={classes.actionButtonWrap}>
             <Controls.Button type="submit" text="更新" />
             <Controls.Button
-              text="取消修改"
+              text="重置修改"
               color="default"
               onClick={() => {
                 resetForm();
