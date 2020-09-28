@@ -115,17 +115,18 @@ router.post("/lead/new", auth, async (req, res) => {
   const country = req.body.country;
   const otherKeywords = req.body.otherKeywords;
   const note = req.body.note;
-  const intention = req.body.intention;
+  let intention = req.body.intention;
 
   // 计算follow up时间
   // intention 1=7天后 2=3天后 2=2天后
   let afterDays = "";
+  let followUpDate = "";
 
-  if (intention === "1") afterDays = "7";
-  else if (intention === "2") afterDays = "3";
-  else afterDays = "2";
+  if (intention === 1) afterDays = "7";
+  else if (intention === 2) afterDays = "3";
+  else if (intention === 3) afterDays = "2";
+  if (afterDays) followUpDate = someDaysLater(afterDays);
 
-  const followUpDate = someDaysLater(afterDays);
   let followUp = false;
   if (intention) {
     followUp = true;
@@ -172,7 +173,8 @@ router.post("/lead/new", auth, async (req, res) => {
       followUp,
     });
 
-    wechatNew.save();
+    await wechatNew.save();
+    // console.log()
 
     res.json({ wechatNew });
   } catch (error) {

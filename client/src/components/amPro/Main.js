@@ -27,6 +27,7 @@ import ImportContactsIcon from "@material-ui/icons/ImportContacts";
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import SchoolIcon from "@material-ui/icons/School";
 import PeopleIcon from "@material-ui/icons/People";
+import CodeIcon from "@material-ui/icons/Code";
 
 import { loadUser } from "../../actions/auth";
 import { logout } from "../../actions/auth";
@@ -37,6 +38,7 @@ import SubAlert from "../ui/SubAlert";
 import LeadFollowUp from "./LeadFollowUp";
 import { getAllLeads } from "../../actions/am";
 import { getAllColleges } from "../../actions/am";
+// import NewLeadForm from "./leads/LeadDetailForm";
 
 function Copyright() {
   return (
@@ -155,7 +157,7 @@ const Main = ({
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   const [mainComponent, setMainComponent] = useState("Dashboard");
 
@@ -299,18 +301,19 @@ const Main = ({
             </ListItemIcon>
             <ListItemText primary="校园大使" />
           </ListItem>
-          {/* <ListItem button>
+          <ListItem
+            button
+            onClick={() => {
+              updateSelectedItem(4);
+              setMainComponent("Test");
+            }}
+            selected={selectedItem === 4}
+          >
             <ListItemIcon>
-              <BarChartIcon />
+              <CodeIcon />
             </ListItemIcon>
-            <ListItemText primary="Reports" />
+            <ListItemText primary="Test" />
           </ListItem>
-          <ListItem button>
-            <ListItemIcon>
-              <LayersIcon />
-            </ListItemIcon>
-            <ListItemText primary="Integrations" />
-          </ListItem> */}
         </List>
         <Divider />
         {/* Add secondary list here is the future!  */}
@@ -329,6 +332,8 @@ const Main = ({
             <AmLeads />
           ) : mainComponent === "Follow Up" ? (
             <LeadFollowUp />
+          ) : mainComponent === "Test" ? (
+            "Test"
           ) : null}
           <Box pt={4}>
             <Copyright />

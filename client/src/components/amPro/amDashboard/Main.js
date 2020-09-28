@@ -61,6 +61,13 @@ const Main = ({ user }) => {
         <Grid item xs={12}>
           <Paper className={classes.paper2}>
             <div>
+              <strong>2020.9.28 更新：</strong>
+            </div>
+            <div>1. 添加了Lead部分选项Sort和按微信号搜索功能。</div>
+            <div>2. 添加了Table的Pagination功能。</div>
+            <div>3. 优化了一些界面和逻辑。</div>
+            <div>4. 修复了一些已知问题。</div>
+            <div>
               <strong>2020.9.20 更新：</strong>
             </div>
             <div>1. 添加了Lead Follow Up每日提醒功能。</div>
@@ -82,13 +89,6 @@ const Main = ({ user }) => {
               优化了对单个Lead进行操作的逻辑，非必选项的下拉菜单增加了未确定选项。
             </div>
             <div>7. 优化了一些操作逻辑。</div>
-            <div>
-              <strong>使用提示：</strong>
-            </div>
-            <div>
-              在上传Lead时，只有带有*号的内容为必选项，其他均为
-              <strong>选填。</strong>
-            </div>
           </Paper>
         </Grid>
       </Grid>

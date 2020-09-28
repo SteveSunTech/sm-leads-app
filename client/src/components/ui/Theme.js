@@ -30,9 +30,9 @@ export default createMuiTheme({
       default: "#f4f5fd",
     },
   },
-  // mixins: {
-  //   toolbar: {
-  //     minHeight: 50
-  //   }
-  // }
+  props: {
+    MuiIconButton: {
+      disableRipple: true,
+    },
+  },
 });

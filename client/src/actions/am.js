@@ -113,6 +113,7 @@ export const uploadLead = (
   note,
   intention
 ) => async (dispatch) => {
+  // console.log(intention);
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -171,14 +172,15 @@ const handleError = (err, dispatch) => {
 export const getAllLeads = () => async (dispatch) => {
   try {
     const res = await axios.get("/api/am/lead/index");
-    let allLeads = res.data.wechats;
     let payload = [];
 
     var processing = new Promise((resolve, reject) => {
-      allLeads.forEach((value, index, array) => {
-        payload.push(value);
-        if (index === array.length - 1) resolve();
-      });
+      if (res.data.wechats) {
+        res.data.wechats.forEach((value, index, array) => {
+          payload.push(value);
+          if (index === array.length - 1) resolve();
+        });
+      }
     });
 
     processing.then(() => {
@@ -196,21 +198,26 @@ export const getAllLeads = () => async (dispatch) => {
 export const getAllColleges = () => async (dispatch) => {
   try {
     const res = await axios.get("/api/am/college/index/");
-    const allColleges = res.data;
-    let payload = [];
+    let payload = res.data;
 
-    var processing = new Promise((resolve, reject) => {
-      allColleges.forEach((value, index, array) => {
-        payload.push(value);
-        if (index === array.length - 1) resolve();
-      });
-    });
+    const asyncMap = await Promise.all(
+      payload.map((e) => {
+        e.id = e._id;
+        e.title = e.collegeDisplay;
+        delete e._id;
+        delete e.collegeId;
+        delete e.collegeDisplay;
+        return e;
+      })
+    );
 
-    processing.then(() => {
-      dispatch({
-        type: AM_LOAD_ALL_COLLEGES,
-        payload,
-      });
+    if (payload) {
+      payload = asyncMap;
+    }
+
+    await dispatch({
+      type: AM_LOAD_ALL_COLLEGES,
+      payload,
     });
   } catch (err) {
     handleError(err, dispatch);
