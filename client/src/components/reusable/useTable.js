@@ -96,8 +96,12 @@ export default function useTable(records, headCells, filterFn) {
 
   function stableSort(array, comparator) {
     const stabilizedThis = array.map((el, index) => [el, index]);
+    // console.log(stabilizedThis);
     stabilizedThis.sort((a, b) => {
+      // console.log(a);
+      // console.log(b);
       const order = comparator(a[0], b[0]);
+      // console.log(order);
       if (order !== 0) return order;
       return a[1] - b[1];
     });

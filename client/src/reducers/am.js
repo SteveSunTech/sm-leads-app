@@ -23,6 +23,7 @@ export default function (state = initialState, action) {
       return state;
     case AM_UPLOAD_SINGLE_LEAD:
       state.allLeads = [...state.allLeads, payload];
+      // state.allLeads.unshift(payload);
       return state;
     case AM_UPDATE_SINGLE_LEAD:
       state.allLeads = state.allLeads.map((e) =>

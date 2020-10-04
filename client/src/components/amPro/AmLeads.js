@@ -87,8 +87,8 @@ const headCells = [
   { id: "wechat", label: "微信号", disableSorting: true },
   { id: "status", label: "状态" },
   { id: "country", label: "地区" },
-  { id: "createdDate", label: "创建时间", disableSorting: true },
-  { id: "updatedDate", label: "更新时间", disableSorting: true },
+  { id: "createdDateDisplay", label: "创建时间" },
+  { id: "updateDateDisplay", label: "更新时间" },
   { id: "operation", label: "操作", disableSorting: true },
 ];
 
@@ -107,6 +107,15 @@ const AmLeads = ({
   // All leads list table
   // **************************************************************
   const [records, setRecords] = useState(allLeads);
+  // Disc List with update date
+  // let sortedList = records;
+  // console.log(allLeads);
+  // sortedList = sortedList.map((el, index) => [el, index]);
+  // sortedList = sortedList.sort((a, b) => {
+  //   return b["updateDateDisplay"] - a["updateDateDisplay"];
+  // });
+  // setRecords(sortedList);
+
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
       return items;
