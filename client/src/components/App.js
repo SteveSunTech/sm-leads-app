@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 // import axios from '../apis/smCovered'
 import { ThemeProvider } from "@material-ui/core/styles";
-import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import { HashRouter as Router, Route, Switch } from "react-router-dom";
 import history from "../history";
 // import { UNKNOW_USER } from '../actions/types'
 
