@@ -1,5 +1,6 @@
 import axios from "axios";
 import { setAlert } from "./subAlert";
+import handleProError from "../utils/HandleProError";
 
 import {
   AM_BASIC_NEW,
@@ -53,7 +54,7 @@ export const upload = (wechat, status, checkedItem) => async (dispatch) => {
       )
     );
   } catch (err) {
-    handleError(err, dispatch);
+    handleProError(err, dispatch);
   }
 };
 
@@ -82,7 +83,7 @@ export const newBasic = (email, password, name, college) => async (
 
     dispatch(setAlert(`校园大使：${payload.name}， 创建成功！`, "success"));
   } catch (err) {
-    handleError(err, dispatch);
+    handleProError(err, dispatch);
   }
 };
 
@@ -97,7 +98,7 @@ export const getAllBasic = () => async (dispatch) => {
       });
     }
   } catch (err) {
-    handleError(err, dispatch);
+    handleProError(err, dispatch);
   }
 };
 
@@ -148,23 +149,7 @@ export const uploadLead = (
       )
     );
   } catch (err) {
-    handleError(err, dispatch);
-  }
-};
-
-const handleError = (err, dispatch) => {
-  console.log(err);
-  if (err.response) {
-    if (err.response.data) {
-      if (err.response.data.errors) {
-        const errors = err.response.data.errors;
-        if (errors) {
-          errors.forEach((error) => dispatch(setAlert(error.msg, "error")));
-        }
-      }
-    } else {
-      dispatch(setAlert(err, "error"));
-    }
+    handleProError(err, dispatch);
   }
 };
 
@@ -190,7 +175,7 @@ export const getAllLeads = () => async (dispatch) => {
       });
     });
   } catch (err) {
-    handleError(err, dispatch);
+    handleProError(err, dispatch);
   }
 };
 
@@ -220,6 +205,6 @@ export const getAllColleges = () => async (dispatch) => {
       payload,
     });
   } catch (err) {
-    handleError(err, dispatch);
+    handleProError(err, dispatch);
   }
 };

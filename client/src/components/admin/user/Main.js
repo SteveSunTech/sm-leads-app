@@ -75,14 +75,15 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const headCells = [
-  { id: "name", label: "学校" },
+  { id: "name", label: "姓名" },
+  { id: "email", label: "email" },
   { id: "area", label: "地区" },
   { id: "operation", label: "操作", disableSorting: true },
 ];
 
-const AdminColleges = ({
+const AdminUsers = ({
   // State
-  allColleges,
+  allUsers,
   // Action
 }) => {
   const classes = useStyles();
@@ -90,7 +91,7 @@ const AdminColleges = ({
   //***************************************************************
   // All leads list table
   // **************************************************************
-  const [records, setRecords] = useState(allColleges);
+  const [records, setRecords] = useState(allUsers);
   // Disc List with update date
   // let sortedList = records;
   // console.log(allLeads);
@@ -128,8 +129,8 @@ const AdminColleges = ({
   };
 
   useEffect(() => {
-    setRecords(allColleges);
-  }, [allColleges]);
+    setRecords(allUsers);
+  }, [allUsers]);
 
   return (
     <Fragment>
@@ -145,7 +146,7 @@ const AdminColleges = ({
       <Paper className={classes.pageContent}>
         <Toolbar>
           <Controls.Input
-            label="搜索学校"
+            label="搜索用户"
             className={classes.searchInput}
             InputProps={{
               startAdornment: (
@@ -157,7 +158,7 @@ const AdminColleges = ({
             onChange={handleSearch}
           />
           <Controls.Button
-            text="添加学校"
+            text="添加用户"
             variant="outlined"
             startIcon={<AddIcon />}
             className={classes.addNewButton}
@@ -169,6 +170,7 @@ const AdminColleges = ({
             {recordsAfterPagingAndSorting().map((item) => (
               <TableRow key={item.id}>
                 <TableCell align="center">{item.name}</TableCell>
+                <TableCell align="center">{item.email}</TableCell>
                 <TableCell align="center">{item.area}</TableCell>
                 <TableCell align="center">
                   <Box component="span">
@@ -197,7 +199,7 @@ const AdminColleges = ({
 };
 
 const mapStateToProps = (state) => ({
-  allColleges: state.admin.allColleges,
+  allUsers: state.admin.allUsers,
 });
 
-export default connect(mapStateToProps, {})(AdminColleges);
+export default connect(mapStateToProps, {})(AdminUsers);

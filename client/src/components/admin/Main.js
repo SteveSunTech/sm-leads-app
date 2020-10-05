@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 // import { Button } from '@material-ui/core';
 // import { mainListItems, secondaryListItems } from "./listItems";
-import { secondaryListItems } from "./listItems";
+// import { secondaryListItems } from "./MenuList";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -12,7 +12,6 @@ import Drawer from "@material-ui/core/Drawer";
 import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
@@ -23,26 +22,23 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 // import NotificationsIcon from '@material-ui/icons/Notifications';
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-// import ListSubheader from "@material-ui/core/ListSubheader";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-// import ShoppingCartIcon from '@material-ui/icons/ShoppingCart';
-import PeopleIcon from "@material-ui/icons/People";
-import BarChartIcon from "@material-ui/icons/BarChart";
-import LayersIcon from "@material-ui/icons/Layers";
-// import AssignmentIcon from "@material-ui/icons/Assignment";
-import SchoolIcon from "@material-ui/icons/School";
 
 // import Deposits from './Deposits';
 // import Orders from './Orders';
-
+import { MainListItems } from "./MenuList";
 import { loadUser } from "../../actions/auth";
 import { logout } from "../../actions/auth";
 import Dashboard from "./adminDashboard/Main";
 import College from "./college/Main";
-import UserManage from "./UserManage";
+import User from "./user/Main";
+import Lead from "./lead/Main";
+import Analyze from "./analyze/Main";
+import {
+  getAllColleges,
+  getAllUsers,
+  getAllLeads,
+  getUserReport,
+} from "../../actions/admin";
 
 function Copyright() {
   return (
@@ -138,7 +134,25 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Main = ({ logout, isAuthenticated, title }) => {
+const Main = ({
+  // state
+  title,
+  user,
+  isAuthenticated,
+  // action
+  logout,
+  getAllLeads,
+  getAllColleges,
+  getAllUsers,
+  getUserReport,
+}) => {
+  useEffect(() => {
+    getAllColleges();
+    getAllUsers();
+    getAllLeads();
+    getUserReport();
+  }, [user]);
+
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
   const handleDrawerOpen = () => {
@@ -219,7 +233,8 @@ const Main = ({ logout, isAuthenticated, title }) => {
           </IconButton>
         </div>
         <Divider />
-        <List>
+        <MainListItems setMainComponent={setMainComponent} />
+        {/* <List>
           <ListItem button onClick={() => setMainComponent("Dashboard")}>
             <ListItemIcon>
               <DashboardIcon />
@@ -250,20 +265,23 @@ const Main = ({ logout, isAuthenticated, title }) => {
             </ListItemIcon>
             <ListItemText primary="Integrations" />
           </ListItem>
-        </List>
+        </List> */}
         <Divider />
-        <List>{secondaryListItems}</List>
+        {/* <List>{secondaryListItems}</List> */}
       </Drawer>
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
           {mainComponent === "Dashboard" ? (
             <Dashboard />
-          ) : // <div>Dashboard</div> :
-          mainComponent === "College" ? (
+          ) : mainComponent === "College" ? (
             <College />
           ) : mainComponent === "Worker" ? (
-            <UserManage />
+            <User />
+          ) : mainComponent === "Lead" ? (
+            <Lead />
+          ) : mainComponent === "Analyze" ? (
+            <Analyze />
           ) : null}
           <Box pt={4}>
             <Copyright />
@@ -280,4 +298,11 @@ const mapStateToProps = (state) => ({
   title: state.auth.title,
 });
 
-export default connect(mapStateToProps, { logout, loadUser })(Main);
+export default connect(mapStateToProps, {
+  logout,
+  loadUser,
+  getAllColleges,
+  getAllUsers,
+  getAllLeads,
+  getUserReport,
+})(Main);

@@ -75,14 +75,18 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const headCells = [
-  { id: "name", label: "学校" },
-  { id: "area", label: "地区" },
+  { id: "college", label: "学校" },
+  { id: "wechat", label: "微信号", disableSorting: true },
+  { id: "status", label: "状态" },
+  { id: "country", label: "地区" },
+  { id: "createdDateDisplay", label: "创建时间" },
+  { id: "updateDateDisplay", label: "更新时间" },
   { id: "operation", label: "操作", disableSorting: true },
 ];
 
-const AdminColleges = ({
+const AdminLeads = ({
   // State
-  allColleges,
+  allLeads,
   // Action
 }) => {
   const classes = useStyles();
@@ -90,7 +94,7 @@ const AdminColleges = ({
   //***************************************************************
   // All leads list table
   // **************************************************************
-  const [records, setRecords] = useState(allColleges);
+  const [records, setRecords] = useState(allLeads);
   // Disc List with update date
   // let sortedList = records;
   // console.log(allLeads);
@@ -120,7 +124,7 @@ const AdminColleges = ({
         if (target.value === "") return items;
         else {
           return items.filter((x) =>
-            x.name.toLowerCase().includes(target.value)
+            x.wechatId.toLowerCase().includes(target.value)
           );
         }
       },
@@ -128,8 +132,8 @@ const AdminColleges = ({
   };
 
   useEffect(() => {
-    setRecords(allColleges);
-  }, [allColleges]);
+    setRecords(allLeads);
+  }, [allLeads]);
 
   return (
     <Fragment>
@@ -145,7 +149,7 @@ const AdminColleges = ({
       <Paper className={classes.pageContent}>
         <Toolbar>
           <Controls.Input
-            label="搜索学校"
+            label="搜索用户"
             className={classes.searchInput}
             InputProps={{
               startAdornment: (
@@ -157,7 +161,7 @@ const AdminColleges = ({
             onChange={handleSearch}
           />
           <Controls.Button
-            text="添加学校"
+            text="添加用户"
             variant="outlined"
             startIcon={<AddIcon />}
             className={classes.addNewButton}
@@ -167,9 +171,13 @@ const AdminColleges = ({
           <TblHead />
           <TableBody>
             {recordsAfterPagingAndSorting().map((item) => (
-              <TableRow key={item.id}>
-                <TableCell align="center">{item.name}</TableCell>
-                <TableCell align="center">{item.area}</TableCell>
+              <TableRow key={item._id}>
+                <TableCell align="center">{item.collegeDisplay}</TableCell>
+                <TableCell align="center">{item.wechatId}</TableCell>
+                <TableCell align="center">{item.status}</TableCell>
+                <TableCell align="center">{item.country}</TableCell>
+                <TableCell align="center">{item.createdDateDisplay}</TableCell>
+                <TableCell align="center">{item.updateDateDisplay}</TableCell>
                 <TableCell align="center">
                   <Box component="span">
                     <Tooltip title="编辑" arrow>
@@ -197,7 +205,7 @@ const AdminColleges = ({
 };
 
 const mapStateToProps = (state) => ({
-  allColleges: state.admin.allColleges,
+  allLeads: state.admin.allLeads,
 });
 
-export default connect(mapStateToProps, {})(AdminColleges);
+export default connect(mapStateToProps, {})(AdminLeads);

@@ -11,7 +11,6 @@ import { connect } from "react-redux";
 import { makeStyles } from "@material-ui/styles";
 
 import { addNewUser } from "../../actions/admin";
-import { getAllCollege } from "../../actions/admin";
 import { AssignCollegeToUser } from "../../actions/admin";
 
 const useStyles = makeStyles((theme) => ({
@@ -273,6 +272,6 @@ const UserManage = ({ addNewUser, getAllCollege, AssignCollegeToUser }) => {
 
 export default connect(null, {
   addNewUser,
-  getAllCollege,
+  // getAllCollege,
   AssignCollegeToUser,
 })(UserManage);

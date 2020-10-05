@@ -5,6 +5,7 @@ import auth from "./auth";
 import basicWeChat from "./basic/basicWechat";
 import amNewBasic from "./am/amNewBasic";
 import am from "./am";
+import admin from "./admin";
 
 export default combineReducers({
   alert,
@@ -13,4 +14,5 @@ export default combineReducers({
   basicWeChat,
   amNewBasic,
   am,
+  admin,
 });
