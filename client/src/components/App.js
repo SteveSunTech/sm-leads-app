@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 // import axios from '../apis/smCovered'
 import { ThemeProvider } from "@material-ui/core/styles";
-import { HashRouter as Router, Route, Switch } from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import history from "../history";
 // import { UNKNOW_USER } from '../actions/types'
 
@@ -52,7 +52,8 @@ const App = () => {
   return (
     <Provider store={store}>
       <ThemeProvider theme={Theme}>
-        <Router history={history}>
+        {/* <Router history={history}> */}
+        <Router>
           <Alert />
           <Switch>
             <Route exact path="/" component={Login} />
