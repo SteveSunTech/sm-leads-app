@@ -49,6 +49,8 @@ router.post(
 
     const { email, password } = req.body;
 
+    // console.log(await AmUser.find({}));
+
     let user = undefined;
 
     try {

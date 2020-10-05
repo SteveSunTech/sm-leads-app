@@ -1,4 +1,4 @@
 {
-  "mongoURI": "mongodb+srv://mmk:hkbdu7a89yulkGr4@studentmedicover.tp8hq.mongodb.net/StudentMedicover?retryWrites=true&w=majority",
+  "mongoURI": "mongodb+srv://mmk:test123123@studentmedicover.tp8hq.mongodb.net/StudentMedicover?retryWrites=true&w=majority",
   "jwtSecret": "jsadfhjiowuaehr239847wea23$@#WDsfafysf78eaw3r@QFW%@jaskldgq324#$"
 }
