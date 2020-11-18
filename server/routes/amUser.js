@@ -9,6 +9,132 @@ const BasicUser = require("../models/BasicUser");
 const College = require("../models/College");
 const date = require("../utils/Date");
 const WechatNew = require("../models/WeChatNew");
+const Profile = require("../models/LeadsProfile");
+
+// Upload new lead & profile to database
+const newProfile = async (wechatId, college, grade, country, req, res) => {
+  try {
+    const user = await AmUser.findById(req.user);
+    let collegeID = await College.findOne({ name: college });
+    collegeID = collegeID._id;
+
+    // Creat profile ID
+    const amEmail = user.email;
+    const p1 = date.split("-").join("");
+    const p2 = wechatId;
+    const p3 = amEmail.split("@")[0];
+    const ProfileID = p1 + "_" + p2 + "_" + p3;
+
+    let profile = new Profile({
+      ProfileID,
+      wechatId,
+      createdDateDisplay: date,
+      updateDateDisplay: date,
+      college: collegeID,
+      collegeDisplay: college,
+      country,
+      grade,
+      createdUser: amEmail,
+      createdUserID: req.user,
+    });
+
+    await profile.save();
+    return profile;
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ errors: [{ msg: error }] });
+  }
+};
+
+// Upload new lead without profile to database
+const newLead = async (
+  wechatId,
+  status,
+  college,
+  keywords,
+  grade,
+  country,
+  otherKeywords,
+  note,
+  intention,
+  req,
+  res,
+  profileID
+) => {
+  // 计算follow up时间
+  // intention 1=7天后 2=3天后 2=2天后
+  let afterDays = "";
+  let followUpDate = "";
+
+  if (intention === 1) afterDays = "7";
+  else if (intention === 2) afterDays = "3";
+  else if (intention === 3) afterDays = "2";
+  if (afterDays) followUpDate = someDaysLater(afterDays);
+
+  let followUp = false;
+  if (intention) {
+    followUp = true;
+  }
+
+  if (wechatId === "") {
+    return res.status(400).json({ errors: [{ msg: "请填写微信号！" }] });
+  }
+  if (status === "") {
+    return res.status(400).json({ errors: [{ msg: "请选择状态！" }] });
+  }
+  if (college === "") {
+    return res.status(400).json({ errors: [{ msg: "请选择学校！" }] });
+  }
+
+  let keywordString = "";
+  if (keywords) {
+    keywordString = keywords.join(" ");
+  }
+
+  try {
+    const user = await AmUser.findById(req.user);
+    // const group = await Group.findOne({ collegeDisplay: college });
+    const collegeID = await College.findOne({ name: college });
+    // console.log(profileID);
+    const wechatNew = new WechatNew({
+      wechatId,
+      status,
+      amUser: user.id,
+      amUserDisplay: user.email,
+      college: collegeID,
+      collegeDisplay: college,
+      // group,
+      // groupDisplay: group.name,
+      keywords: keywordString,
+      otherKeywords,
+      country,
+      grade,
+      note,
+      createdDateDisplay: date,
+      updateDateDisplay: date,
+      intention,
+      followUpDate,
+      followUp,
+      profileID,
+    });
+
+    // Check if new leads belongs to others profile
+    const profile = await Profile.findOne({ ProfileID: profileID });
+    if (profile.createdUserID !== req.user) {
+      wechatNew.participateUser = [
+        { UserID: profile.createdUserID, UserDisplay: profile.createdUser },
+      ];
+    }
+    await wechatNew.save();
+
+    // console.log(wechatNew);
+
+    return wechatNew;
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ errors: [{ msg: error }] });
+  }
+};
 
 // @route      Get api/am/basic/index
 // @desc       get all ambassador belong to current am
@@ -116,70 +242,45 @@ router.post("/lead/new", auth, async (req, res) => {
   const otherKeywords = req.body.otherKeywords;
   const note = req.body.note;
   let intention = req.body.intention;
+  const makeProfile = req.body.makeProfile;
+  const profileID = req.body.ProfileID;
 
-  // 计算follow up时间
-  // intention 1=7天后 2=3天后 2=2天后
-  let afterDays = "";
-  let followUpDate = "";
-
-  if (intention === 1) afterDays = "7";
-  else if (intention === 2) afterDays = "3";
-  else if (intention === 3) afterDays = "2";
-  if (afterDays) followUpDate = someDaysLater(afterDays);
-
-  let followUp = false;
-  if (intention) {
-    followUp = true;
-  }
-
-  if (wechatId === "") {
-    return res.status(400).json({ errors: [{ msg: "请填写微信号！" }] });
-  }
-  if (status === "") {
-    return res.status(400).json({ errors: [{ msg: "请选择状态！" }] });
-  }
-  if (college === "") {
-    return res.status(400).json({ errors: [{ msg: "请选择学校！" }] });
-  }
-
-  let keywordString = "";
-  if (keywords) {
-    keywordString = keywords.join(" ");
-  }
-
-  try {
-    const user = await AmUser.findById(req.user);
-    const group = await Group.findOne({ collegeDisplay: college });
-    const collegeID = await College.findOne({ name: college });
-    // console.log(group)
-    const wechatNew = new WechatNew({
+  let wechatNew;
+  if (makeProfile) {
+    profileNew = await newProfile(wechatId, college, grade, country, req, res);
+    wechatNew = await newLead(
       wechatId,
       status,
-      amUser: user.id,
-      amUserDisplay: user.email,
-      college: collegeID,
-      collegeDisplay: college,
-      // group,
-      // groupDisplay: group.name,
-      keywords: keywordString,
-      otherKeywords,
-      country,
+      college,
+      keywords,
       grade,
+      country,
+      otherKeywords,
       note,
-      createdDateDisplay: date,
-      updateDateDisplay: date,
       intention,
-      followUpDate,
-      followUp,
-    });
+      req,
+      res,
+      profileNew.ProfileID
+    );
 
-    await wechatNew.save();
-    // console.log()
+    res.json({ justNewLead: false, wechatNew, profileNew });
+  } else {
+    wechatNew = await newLead(
+      wechatId,
+      status,
+      college,
+      keywords,
+      grade,
+      country,
+      otherKeywords,
+      note,
+      intention,
+      req,
+      res,
+      profileID
+    );
 
-    res.json({ wechatNew });
-  } catch (error) {
-    console.log(error);
-    return res.status(400).json({ errors: [{ msg: error }] });
+    res.json({ justNewLead: true, wechatNew });
   }
 });
 
@@ -188,7 +289,16 @@ router.post("/lead/new", auth, async (req, res) => {
 // @access     private
 router.get("/lead/index", auth, async (req, res) => {
   try {
-    const wechats = await WechatNew.find({ amUser: req.user });
+    let wechats = await WechatNew.find({ amUser: req.user });
+    let otherWechats = await WechatNew.find({
+      "participateUser.UserID": req.user,
+    });
+    wechats = wechats.concat(otherWechats);
+    // wechats.sort(function (a, b) {
+    //   return b.updateDateDisplay - a.updateDateDisplay;
+    // });
+    // console.log(wechats);
+    wechats.reverse();
 
     res.json({ wechats });
   } catch (error) {
@@ -223,5 +333,23 @@ const someDaysLater = (days) => {
     today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate()
   );
 };
+
+// @route      Get /api/am/profiles/index
+// @desc       get all profiles belong to current user
+// @access     private
+router.get("/profiles/index", auth, async (req, res) => {
+  try {
+    let profiles = await Profile.find({ createdUserID: req.user });
+    let otherProfiles = await Profile.find({
+      "participateUser.UserID": req.user,
+    });
+    profiles = profiles.concat(otherProfiles);
+    profiles.reverse();
+    res.json({ profiles });
+  } catch (error) {
+    console.log(error);
+    return res.status(400).json({ errors: [{ msg: error }] });
+  }
+});
 
 module.exports = router;

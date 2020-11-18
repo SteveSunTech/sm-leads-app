@@ -1,5 +1,13 @@
 import React, { useState } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
+import _ from "lodash";
+
+// Actions
+import {
+  setCurrentProfile,
+  updateSingleProfile,
+} from "../../../actions/profile";
+import { uploadLead } from "../../../actions/am";
 
 import { makeStyles } from "@material-ui/styles";
 import {
@@ -23,7 +31,6 @@ import {
   countryOptions,
   keywordsCheckbox,
 } from "../../config/Leads";
-import { uploadLead } from "../../../actions/am";
 
 const useStyle = makeStyles((theme) => ({
   keywordsLable: {
@@ -45,24 +52,27 @@ const useStyle = makeStyles((theme) => ({
   },
 }));
 
-let initialFValues = {
-  wechat: "",
-  status: "",
-  college: "",
-  grade: "",
-  country: "",
-  otherKeywords: "",
-  note: "",
-  intention: "",
-};
 const initialCheckbox = keywordsCheckbox().reduce(
   (ac, a) => ({ ...ac, [a]: false }),
   {}
 );
-initialFValues = Object.assign({}, initialFValues, initialCheckbox);
 
-const NewLeadForm = ({ allColleges, uploadLead, setOpenPopup }) => {
+const NewLeadForm = ({
+  allColleges,
+  uploadLead,
+  setOpenPopup,
+  initialFValues,
+  makeProfile,
+  ProfileID,
+  setCurrentProfile,
+  updateSingleProfile,
+}) => {
   const classes = useStyle();
+
+  const currentProfile = useSelector((state) => state.profile.currentProfile);
+  const user = useSelector((state) => state.auth.user);
+
+  initialFValues = Object.assign({}, initialFValues, initialCheckbox);
 
   const validate = (fieldValues = values) => {
     let temp = { ...errors };
@@ -111,7 +121,9 @@ const NewLeadForm = ({ allColleges, uploadLead, setOpenPopup }) => {
     setValues({
       ...values,
       [e.target.name]: e.target.value,
+      intention: "",
     });
+
     if (e.target.value === statusOptions()[1].title)
       setIntentionDisplay("block");
     else setIntentionDisplay("none");
@@ -153,11 +165,27 @@ const NewLeadForm = ({ allColleges, uploadLead, setOpenPopup }) => {
         country,
         otherKeywords,
         note,
-        intentionID
+        intentionID,
+        makeProfile,
+        ProfileID
       );
       setOpenPopup(false);
       resetOtherArea();
       resetForm();
+    }
+
+    if (ProfileID) {
+      console.log(currentProfile);
+      console.log(user.email);
+      const payload = {
+        collegeDisplay: college,
+        country,
+        grade,
+        updateDateUser: user.email,
+      };
+      _.extend(currentProfile, payload);
+      setCurrentProfile(currentProfile);
+      updateSingleProfile(currentProfile);
     }
   };
 
@@ -309,4 +337,6 @@ const mapStateToProps = (state) => ({
 
 export default connect(mapStateToProps, {
   uploadLead,
+  setCurrentProfile,
+  updateSingleProfile,
 })(NewLeadForm);

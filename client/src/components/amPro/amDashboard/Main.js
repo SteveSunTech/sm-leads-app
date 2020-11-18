@@ -58,7 +58,7 @@ const Main = ({ user }) => {
             <div>待完成：0</div>
           </Paper>
         </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Paper className={classes.paper2}>
             <div>
               <strong>2020.9.28 更新：</strong>
@@ -90,7 +90,7 @@ const Main = ({ user }) => {
             </div>
             <div>7. 优化了一些操作逻辑。</div>
           </Paper>
-        </Grid>
+        </Grid> */}
       </Grid>
     </div>
   );

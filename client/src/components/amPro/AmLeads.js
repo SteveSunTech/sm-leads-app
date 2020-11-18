@@ -57,20 +57,16 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     minWidth: 650,
-    // marginTop: '60px'
   },
   container: {
-    // marginTop: '30px',
     marginBottom: "30px",
   },
   paper: {
     backgroundColor: theme.palette.background.paper,
-    // border: '2px solid #000',
     boxShadow: theme.shadows[5],
     padding: theme.spacing(6, 6, 6),
   },
   pageContent: {
-    // margin: theme.spacing(2),
     padding: theme.spacing(3),
   },
   searchInput: {
@@ -131,12 +127,13 @@ const AmLeads = ({
 
   const handleSearch = (e) => {
     let target = e.target;
+    let fieldName = e.target.name;
     setFilterFn({
       fn: (items) => {
         if (target.value == "") return items;
         else {
           return items.filter((x) =>
-            x.wechatId.toLowerCase().includes(target.value)
+            x[fieldName].toLowerCase().includes(target.value)
           );
         }
       },
@@ -232,6 +229,7 @@ const AmLeads = ({
           <Controls.Input
             label="搜索微信号"
             className={classes.searchInput}
+            name="wechatId"
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
@@ -246,7 +244,7 @@ const AmLeads = ({
             variant="outlined"
             startIcon={<AddIcon />}
             className={classes.addNewButton}
-            onClick={() => setNewLeadOpenPopup(true)}
+            // onClick={() => setNewLeadOpenPopup(true)}
           />
         </Toolbar>
         <TblContainer>
@@ -304,7 +302,11 @@ const AmLeads = ({
         title="Lead Upload"
         maxWidth="md"
       >
-        <NewLeadForm setOpenPopup={setNewLeadOpenPopup} />
+        <NewLeadForm
+          setOpenPopup={setNewLeadOpenPopup}
+          // initialFValues={newRecordInitialValues}
+          // makeProfile={false}
+        />
       </Popup>
       {/* Lead Detail modal */}
       <Popup

@@ -14,23 +14,10 @@ import setAuthToken from "../utils/setAuthToken";
 
 // Load User
 export const loadUser = () => async (dispatch) => {
-  // if (localStorage.token) {
-  //   // console.log(localStorage.token)
-  //   setAuthToken(localStorage.token);
-  // }
-
   try {
-    await setAuthToken(localStorage.token);
-    //axios.defaults.headers.common['x-auth-token'] = localStorage.token
-    // console.log(axios.defaults.headers.common);
+    setAuthToken(localStorage.token);
 
-    const res = await axios.get("/api/auth"); // @yuchen 最开始程序死在这里了; 现在改好了
-
-    // console.log(axios.defaults.headers.common);
-
-    // const res = await axios.get('/api/auth', {headers: { Authoization}})
-
-    // console.log(res);
+    const res = await axios.get("/api/auth");
 
     dispatch({
       type: USER_LOADED,
@@ -94,7 +81,7 @@ export const login = (email, password) => async (dispatch) => {
   try {
     const res = await axios.post("/api/auth/login", body, config);
 
-    // console.log(res)
+    setAuthToken(res.data.token);
 
     await dispatch({
       type: LOGIN_SUCCESS,

@@ -7,6 +7,10 @@ import {
   AM_LOAD_ALL_LEADS,
   AM_LOAD_ALL_COLLEGES,
   AM_UPLOAD_SINGLE_LEAD,
+  AM_LOAD_ALL_PROFILES,
+  AM_SAVING_PROFILELEAD,
+  AM_UPLOAD_SINGLE_PROFILE,
+  AM_DELETE_SINGLE_PROFILE,
 } from "./types";
 
 // // Lookup wechat from database
@@ -74,12 +78,12 @@ export const newBasic = (email, password, name, college) => async (
     const res = await axios.post("/api/am/basic/new", body, config);
     const payload = res.data.user;
 
-    // console.log(payload)
+    console.log(payload);
 
-    dispatch({
-      type: AM_BASIC_NEW,
-      payload,
-    });
+    // dispatch({
+    //   type: AM_BASIC_NEW,
+    //   payload,
+    // });
 
     dispatch(setAlert(`校园大使：${payload.name}， 创建成功！`, "success"));
   } catch (err) {
@@ -87,7 +91,7 @@ export const newBasic = (email, password, name, college) => async (
   }
 };
 
-// get all wechat lead account belong to current user
+// get all basic users belong to current user
 export const getAllBasic = () => async (dispatch) => {
   try {
     const res = await axios.get("api/am/basic/index");
@@ -112,9 +116,11 @@ export const uploadLead = (
   country,
   otherKeywords,
   note,
-  intention
+  intention,
+  makeProfile,
+  ProfileID
 ) => async (dispatch) => {
-  // console.log(intention);
+  // console.log(ProfileID);
   const config = {
     headers: {
       "Content-Type": "application/json",
@@ -131,23 +137,49 @@ export const uploadLead = (
     otherKeywords,
     note,
     intention,
+    makeProfile,
+    ProfileID,
   });
 
   try {
     const res = await axios.post("/api/am/lead/new", body, config);
-    const payload = res.data.wechatNew;
+    const payload = res.data;
 
-    await dispatch({
-      type: AM_UPLOAD_SINGLE_LEAD,
-      payload,
-    });
-
-    dispatch(
-      setAlert(
-        `“微信：${payload.wechatId}，状态：${payload.status}” 上传成功！`,
-        "success"
-      )
-    );
+    if (payload.justNewLead) {
+      await dispatch({
+        type: AM_UPLOAD_SINGLE_LEAD,
+        payload: payload.wechatNew,
+      });
+      dispatch(
+        setAlert(
+          `“微信：${payload.wechatNew.wechatId}，状态：${payload.wechatNew.status}” 上传成功！`,
+          "success"
+        )
+      );
+    } else {
+      // Update profile in redux
+      await dispatch({
+        type: AM_UPLOAD_SINGLE_PROFILE,
+        payload: payload.profileNew,
+      });
+      dispatch(
+        setAlert(
+          `Profile：${payload.profileNew.ProfileID} 已成功建立！`,
+          "success"
+        )
+      );
+      // Update lead in redux
+      await dispatch({
+        type: AM_UPLOAD_SINGLE_LEAD,
+        payload: payload.wechatNew,
+      });
+      dispatch(
+        setAlert(
+          `“微信：${payload.wechatNew.wechatId}，状态：${payload.wechatNew.status}” 上传成功！`,
+          "success"
+        )
+      );
+    }
   } catch (err) {
     handleProError(err, dispatch);
   }
@@ -203,6 +235,33 @@ export const getAllColleges = () => async (dispatch) => {
     await dispatch({
       type: AM_LOAD_ALL_COLLEGES,
       payload,
+    });
+  } catch (err) {
+    handleProError(err, dispatch);
+  }
+};
+
+// get all profiles belong to current user
+export const getAllProfiles = () => async (dispatch) => {
+  try {
+    const res = await axios.get("api/am/profiles/index");
+
+    let payload = [];
+
+    var processing = new Promise((resolve, reject) => {
+      if (res.data.profiles) {
+        res.data.profiles.forEach((value, index, array) => {
+          payload.push(value);
+          if (index === array.length - 1) resolve();
+        });
+      }
+    });
+
+    processing.then(() => {
+      dispatch({
+        type: AM_LOAD_ALL_PROFILES,
+        payload,
+      });
     });
   } catch (err) {
     handleProError(err, dispatch);

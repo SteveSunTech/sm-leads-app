@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import clsx from "clsx";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
 
 import { makeStyles } from "@material-ui/core/styles";
@@ -9,7 +9,6 @@ import Drawer from "@material-ui/core/Drawer";
 import Box from "@material-ui/core/Box";
 import AppBar from "@material-ui/core/AppBar";
 import Toolbar from "@material-ui/core/Toolbar";
-import List from "@material-ui/core/List";
 import Typography from "@material-ui/core/Typography";
 import Divider from "@material-ui/core/Divider";
 import IconButton from "@material-ui/core/IconButton";
@@ -19,15 +18,6 @@ import Link from "@material-ui/core/Link";
 import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemIcon from "@material-ui/core/ListItemIcon";
-import ListItemText from "@material-ui/core/ListItemText";
-import DashboardIcon from "@material-ui/icons/Dashboard";
-import ImportContactsIcon from "@material-ui/icons/ImportContacts";
-import AssignmentIcon from "@material-ui/icons/Assignment";
-import SchoolIcon from "@material-ui/icons/School";
-import PeopleIcon from "@material-ui/icons/People";
-import CodeIcon from "@material-ui/icons/Code";
 
 import { loadUser } from "../../actions/auth";
 import { logout } from "../../actions/auth";
@@ -36,8 +26,10 @@ import BasicManage from "./BasicManage";
 import AmLeads from "./AmLeads";
 import SubAlert from "../ui/SubAlert";
 import LeadFollowUp from "./LeadFollowUp";
-import { getAllLeads } from "../../actions/am";
+import { getAllLeads, getAllProfiles } from "../../actions/am";
 import { getAllColleges } from "../../actions/am";
+import { MainListItems } from "./MenuList";
+import Profiles from "./profiles/index";
 // import NewLeadForm from "./leads/LeadDetailForm";
 
 function Copyright() {
@@ -135,22 +127,26 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const Main = ({
-  user,
+  // State
   logout,
   isAuthenticated,
   title,
+  // Actions
   getAllLeads,
   getAllColleges,
+  getAllProfiles,
 }) => {
+  const token = useSelector((state) => state.auth.token);
+
   useEffect(() => {
     getAllLeads();
     getAllColleges();
-  }, [user]);
-
-  const test = "";
+    getAllProfiles();
+  }, [token]);
 
   const classes = useStyles();
   const [open, setOpen] = React.useState(true);
+
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -160,12 +156,6 @@ const Main = ({
   // const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 
   const [mainComponent, setMainComponent] = useState("Dashboard");
-
-  // highlight selected item
-  const [selectedItem, setSelectedItem] = useState(0);
-  const updateSelectedItem = (selectedIndex) => {
-    setSelectedItem(selectedIndex);
-  };
 
   // Authentication
   if (isAuthenticated) {
@@ -235,86 +225,7 @@ const Main = ({
           </IconButton>
         </div>
         <Divider />
-        <List>
-          <ListItem
-            button
-            onClick={() => {
-              updateSelectedItem(0);
-              setMainComponent("Dashboard");
-            }}
-            selected={selectedItem === 0}
-          >
-            <ListItemIcon>
-              <DashboardIcon />
-            </ListItemIcon>
-            <ListItemText primary="Dashboard" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => {
-              updateSelectedItem(1);
-              setMainComponent("All Leads");
-            }}
-            selected={selectedItem === 1}
-          >
-            <ListItemIcon>
-              <ImportContactsIcon />
-            </ListItemIcon>
-            <ListItemText primary="All Leads" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => {
-              updateSelectedItem(1.5);
-              setMainComponent("Follow Up");
-            }}
-            selected={selectedItem === 1.5}
-          >
-            <ListItemIcon>
-              <AssignmentIcon />
-            </ListItemIcon>
-            <ListItemText primary="Follow Up Leads" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => {
-              updateSelectedItem(2);
-              setMainComponent("College");
-            }}
-            selected={selectedItem === 2}
-          >
-            <ListItemIcon>
-              <SchoolIcon />
-            </ListItemIcon>
-            <ListItemText primary="College" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => {
-              updateSelectedItem(3);
-              setMainComponent("校园大使");
-            }}
-            selected={selectedItem === 3}
-          >
-            <ListItemIcon>
-              <PeopleIcon />
-            </ListItemIcon>
-            <ListItemText primary="校园大使" />
-          </ListItem>
-          <ListItem
-            button
-            onClick={() => {
-              updateSelectedItem(4);
-              setMainComponent("Test");
-            }}
-            selected={selectedItem === 4}
-          >
-            <ListItemIcon>
-              <CodeIcon />
-            </ListItemIcon>
-            <ListItemText primary="Test" />
-          </ListItem>
-        </List>
+        <MainListItems setMainComponent={setMainComponent} />
         <Divider />
         {/* Add secondary list here is the future!  */}
       </Drawer>
@@ -334,6 +245,8 @@ const Main = ({
             <LeadFollowUp />
           ) : mainComponent === "Test" ? (
             "Test"
+          ) : mainComponent === "Profiles" ? (
+            <Profiles />
           ) : null}
           <Box pt={4}>
             <Copyright />
@@ -355,4 +268,5 @@ export default connect(mapStateToProps, {
   loadUser,
   getAllLeads,
   getAllColleges,
+  getAllProfiles,
 })(Main);

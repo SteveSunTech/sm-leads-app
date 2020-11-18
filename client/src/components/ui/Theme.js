@@ -1,6 +1,6 @@
 import { createMuiTheme } from "@material-ui/core/styles";
 
-const mmkPurple = "#a000a0";
+// const mmkPurple = "#a000a0";
 
 // red #cd0000
 // purplt #a000a0

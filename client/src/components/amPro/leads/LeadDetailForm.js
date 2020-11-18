@@ -56,6 +56,11 @@ const LeadDetailForm = ({
   updateSingleLead,
   setOpenPopup,
 }) => {
+  console.log(initialFValues);
+  console.log(allColleges);
+  allColleges.push({
+    title: initialFValues.college,
+  });
   const classes = useStyle();
 
   const [followUpDate, setFollowUpDate] = useState(initialFValues.followUpDate);
@@ -130,7 +135,7 @@ const LeadDetailForm = ({
       setFollowUpDate(initialFValues.followUpDate);
     }
   };
-
+  // console.log(initialFValues);
   useEffect(() => {
     initialIntentionDisplay();
   }, [initialFValues.leadID]);

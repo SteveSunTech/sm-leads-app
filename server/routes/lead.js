@@ -7,7 +7,7 @@ const WechatNew = require("../models/WeChatNew");
 const College = require("../models/College");
 
 // @route      Get api/lead/:id
-// @desc       get single lead detail
+// @desc       get single lead detail by ID
 // @access     private
 router.get("/:id", auth, async (req, res) => {
   try {
@@ -69,7 +69,7 @@ router.post("/update/:id", auth, async (req, res) => {
     lead.intention = intention;
     lead.followUpDate = followUpDate;
 
-    lead.save();
+    await lead.save();
 
     res.json(lead);
   } catch (err) {

@@ -19,7 +19,6 @@ export default function Select(props) {
       <InputLabel>{label}</InputLabel>
       <MuiSelect label={label} name={name} value={value} onChange={onChange}>
         <MenuItem value="">None</MenuItem>
-        console.log(options)
         {options.map((item) => (
           <MenuItem key={item.id} value={item.title}>
             {item.title}

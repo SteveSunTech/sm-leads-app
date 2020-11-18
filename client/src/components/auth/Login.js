@@ -1,33 +1,32 @@
-import React, { useState } from 'react'
-import Avatar from '@material-ui/core/Avatar';
-import Button from '@material-ui/core/Button';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import TextField from '@material-ui/core/TextField';
+import React, { useState } from "react";
+import Avatar from "@material-ui/core/Avatar";
+import Button from "@material-ui/core/Button";
+import CssBaseline from "@material-ui/core/CssBaseline";
+import TextField from "@material-ui/core/TextField";
 // import FormControlLabel from '@material-ui/core/FormControlLabel';
 // import Checkbox from '@material-ui/core/Checkbox';
-import Link from '@material-ui/core/Link';
-import Grid from '@material-ui/core/Grid';
-import Box from '@material-ui/core/Box';
-import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
-import Typography from '@material-ui/core/Typography';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import { Redirect } from 'react-router-dom';
+import Link from "@material-ui/core/Link";
+import Grid from "@material-ui/core/Grid";
+import Box from "@material-ui/core/Box";
+import LockOutlinedIcon from "@material-ui/icons/LockOutlined";
+import Typography from "@material-ui/core/Typography";
+import { makeStyles } from "@material-ui/core/styles";
+import Container from "@material-ui/core/Container";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+import { Redirect } from "react-router-dom";
 
-import { login } from '../../actions/auth';
-
+import { login } from "../../actions/auth";
 
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
-      {'Copyright © '}
+      {"Copyright © "}
       <Link color="inherit" href="https://material-ui.com/">
         Student Medicover
-      </Link>{' '}
+      </Link>{" "}
       {new Date().getFullYear()}
-      {'.'}
+      {"."}
     </Typography>
   );
 }
@@ -35,16 +34,16 @@ function Copyright() {
 const useStyles = makeStyles((theme) => ({
   paper: {
     marginTop: theme.spacing(8),
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
   },
   avatar: {
     margin: theme.spacing(1),
     backgroundColor: theme.palette.primary.main,
   },
   form: {
-    width: '100%', // Fix IE 11 issue.
+    width: "100%", // Fix IE 11 issue.
     marginTop: theme.spacing(3),
   },
   submit: {
@@ -54,27 +53,27 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-
 const Login = ({ login, isAuthenticated, title }) => {
   // console.log(isAuthenticated)
   const classes = useStyles();
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  })
+    email: "",
+    password: "",
+  });
 
-  const {email, password} = formData;
+  const { email, password } = formData;
 
-  const onChange = e => setFormData({
-    ...formData,
-    [e.target.name]: e.target.value
-  })
+  const onChange = (e) =>
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
 
-  const onSubmit = e => {
+  const onSubmit = (e) => {
     e.preventDefault();
     login(email, password);
-  }
+  };
 
   // console.log(title)
 
@@ -82,12 +81,12 @@ const Login = ({ login, isAuthenticated, title }) => {
   // console.log(isAuthenticated)
   // console.log(title)
   if (isAuthenticated) {
-    if (title === 'basic') {
-      return <Redirect to='/ambassador' />
-    } else if (title === 'admin') {
-      return <Redirect to='/admin' />
-    } else if (title === 'am') {
-      return <Redirect to='/am' />
+    if (title === "basic") {
+      return <Redirect to="/ambassador" />;
+    } else if (title === "admin") {
+      return <Redirect to="/admin" />;
+    } else if (title === "am") {
+      return <Redirect to="/am" />;
     }
   }
 
@@ -101,7 +100,7 @@ const Login = ({ login, isAuthenticated, title }) => {
         <Typography component="h1" variant="h5">
           Login
         </Typography>
-        <form className={classes.form} noValidate onSubmit={e => onSubmit(e)}>
+        <form className={classes.form} noValidate onSubmit={(e) => onSubmit(e)}>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               <TextField
@@ -113,7 +112,7 @@ const Login = ({ login, isAuthenticated, title }) => {
                 name="email"
                 autoComplete="email"
                 value={email}
-                onChange={e => onChange(e)}
+                onChange={(e) => onChange(e)}
               />
             </Grid>
             <Grid item xs={12}>
@@ -126,9 +125,9 @@ const Login = ({ login, isAuthenticated, title }) => {
                 type="password"
                 id="password"
                 autoComplete="current-password"
-                minLength='6'
+                minLength="6"
                 value={password}
-                onChange={e => onChange(e)}
+                onChange={(e) => onChange(e)}
               />
             </Grid>
           </Grid>
@@ -155,16 +154,16 @@ const Login = ({ login, isAuthenticated, title }) => {
       </Box>
     </Container>
   );
-}
+};
 
 Login.propTypes = {
   login: PropTypes.func.isRequired,
   isAuthenticated: PropTypes.bool,
 };
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   isAuthenticated: state.auth.isAuthenticated,
-  title: state.auth.title
+  title: state.auth.title,
 });
 
 export default connect(mapStateToProps, { login })(Login);

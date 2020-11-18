@@ -19,7 +19,7 @@ import { Provider } from "react-redux";
 import store from "../store";
 
 if (localStorage.token) {
-  // console.log(localStorage.token);
+  console.log(localStorage.token);
   setAuthToken(localStorage.token);
 }
 

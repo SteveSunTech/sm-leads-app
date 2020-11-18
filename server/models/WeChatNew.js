@@ -5,7 +5,6 @@ const WechatNewSchema = new Schema({
   wechatId: {
     type: String,
     required: true,
-    unique: true,
   },
   worker: {
     type: Boolean,
@@ -92,6 +91,19 @@ const WechatNewSchema = new Schema({
   followUpDate: {
     type: String,
   },
+  profileID: {
+    type: String,
+  },
+  participateUser: [
+    {
+      UserID: {
+        type: Schema.Types.ObjectId,
+      },
+      UserDisplay: {
+        type: String,
+      },
+    },
+  ],
 });
 
 module.exports = WechatNew = mongoose.model("WechatNew", WechatNewSchema);

@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
       color: theme.palette.primary.main,
       backgroundColor: theme.palette.primary.light,
     },
+    // "& tbody tr": {
+    //   height: "10px !important",
+    // },
     "& tbody td": {
       fontWeight: "400",
     },
@@ -31,7 +34,7 @@ export default function useTable(records, headCells, filterFn) {
 
   const pages = [5, 10, 15, 25, 50];
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(pages[0]);
+  const [rowsPerPage, setRowsPerPage] = useState(pages[1]);
   const [order, setOrder] = useState();
   const [orderBy, setOrderBy] = useState();
 
