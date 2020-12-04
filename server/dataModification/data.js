@@ -102,19 +102,14 @@ const leadsUpdateCheck = async () => {
   try {
     const leads = await Lead.find({});
     let count = 0;
+    let college;
     const check = new Promise((resolve, reject) => {
       leads.forEach(async (item, index, array) => {
-        if (
-          item.profileID === "" ||
-          item.profileID === undefined ||
-          item.profileID === null
-        ) {
-          // item.followUp = false;
-          // item.followUpDate = "";
-          // item.intention = "";
-          // item.save();
-          // await Lead.findByIdAndDelete(item._id);
-          count++;
+        if (item.college === undefined) {
+          console.log(item.collegeDisplay);
+          college = await College.find({ name: item.collegeDisplay });
+          console.log(college._id);
+          item.college = college._id;
         }
         if (index === array.length - 1) resolve();
       });
@@ -127,4 +122,19 @@ const leadsUpdateCheck = async () => {
   }
 };
 
-module.exports = { profileGenerator, leadsUpdateCheck };
+const amUserModification = async () => {
+  amUser = await AmUser.find({});
+
+  const processing = new Promise((resolve, reject) => {
+    amUser.forEach(async (item, index, array) => {
+      item.preference.table.paginationRows = 10;
+      await item.save();
+      if (index === array.length - 1) resolve();
+    });
+  });
+  processing.then(async () => {
+    console.log("done!");
+  });
+};
+
+module.exports = { profileGenerator, leadsUpdateCheck, amUserModification };

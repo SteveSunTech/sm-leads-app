@@ -8,10 +8,16 @@ const useStyles = makeStyles((theme) => ({
   label: {
     textTransform: "none",
   },
+  greenButton: {
+    backgroundColor: "#43a047",
+    // "& :hover": {
+    //   backgroundColor: "#81c784",
+    // },
+  },
 }));
 
 export default function Button(props) {
-  const { text, size, color, variant, onClick, ...other } = props;
+  const { text, size, color, variant, onClick, green, ...other } = props;
   const classes = useStyles();
 
   return (
@@ -21,6 +27,7 @@ export default function Button(props) {
       color={color || "primary"}
       onClick={onClick}
       {...other}
+      className={green ? classes.greenButton : null}
       classes={{ root: classes.root, label: classes.label }}
     >
       {text}

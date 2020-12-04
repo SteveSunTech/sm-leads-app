@@ -104,6 +104,36 @@ const WechatNewSchema = new Schema({
       },
     },
   ],
+  updatedLog: [
+    {
+      UserDisplay: {
+        type: String,
+      },
+      updateDate: {
+        type: Date,
+        default: Date.now(),
+      },
+      updateDateDisplay: {
+        type: String,
+      },
+      logID: {
+        type: String,
+      },
+      content: [
+        {
+          name: {
+            type: String,
+          },
+          old: {
+            type: String,
+          },
+          new: {
+            type: String,
+          },
+        },
+      ],
+    },
+  ],
 });
 
 module.exports = WechatNew = mongoose.model("WechatNew", WechatNewSchema);

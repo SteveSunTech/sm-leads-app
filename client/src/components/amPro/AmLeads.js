@@ -13,20 +13,26 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-// import BackupIcon from "@material-ui/icons/Backup";
+
+// Icons
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Search } from "@material-ui/icons";
 import AddIcon from "@material-ui/icons/Add";
-// import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 
+// Actions
 import { uploadLead } from "../../actions/am";
 import { updateSingleLead } from "../../actions/lead";
 import { deleteSingleLead } from "../../actions/lead";
-import Popup from "../reusable/Popup";
+
+// Components
 import LeadDetailForm from "./leads/LeadDetailForm";
 import NewLeadForm from "./leads/NewLeadForm";
 import { intentionOptions } from "../config/Leads";
+import FilterBar from "./leads/filterBar";
+
+// Reusable
+import Popup from "../reusable/Popup";
 import useTable from "../reusable/useTable";
 import Controls from "../reusable/controls/Controls";
 import ConfirmDialog from "../reusable/ConfirmDialog";
@@ -37,8 +43,6 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       width: 200,
     },
-    // display: 'flex',
-    // flexDirection: 'column',
   },
   uploadModalPopupButton: {
     marginTop: "30px",
@@ -46,7 +50,6 @@ const useStyles = makeStyles((theme) => ({
     border: "none",
     color: "white",
     backgroundColor: theme.palette.primary.main,
-    // width: '80px',
     height: "50px",
     borderRadius: "5px",
     fontWeight: "600",
@@ -103,14 +106,6 @@ const AmLeads = ({
   // All leads list table
   // **************************************************************
   const [records, setRecords] = useState(allLeads);
-  // Disc List with update date
-  // let sortedList = records;
-  // console.log(allLeads);
-  // sortedList = sortedList.map((el, index) => [el, index]);
-  // sortedList = sortedList.sort((a, b) => {
-  //   return b["updateDateDisplay"] - a["updateDateDisplay"];
-  // });
-  // setRecords(sortedList);
 
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -125,16 +120,47 @@ const AmLeads = ({
     recordsAfterPagingAndSorting,
   } = useTable(records, headCells, filterFn);
 
-  const handleSearch = (e) => {
-    let target = e.target;
-    let fieldName = e.target.name;
+  const handleSearch = (indexList) => {
+    const copyList = { ...indexList };
+    Object.keys(copyList).forEach((item) => {
+      if (copyList[item] === "") delete copyList[item];
+    });
     setFilterFn({
       fn: (items) => {
-        if (target.value == "") return items;
+        console.log(indexList);
+        if (Object.keys(copyList).length === 0) return items;
         else {
-          return items.filter((x) =>
-            x[fieldName].toLowerCase().includes(target.value)
-          );
+          const t1 = indexList.collegeDisplay;
+          const t2 = indexList.status;
+          const t3 = indexList.country;
+          return items.filter((item) => {
+            // console.log(item);
+            if (
+              (t1 !== "" && t1 !== item.collegeDisplay) ||
+              (t2 !== "" && t2 !== item.status) ||
+              (t3 !== "" && t3 !== item.country)
+            ) {
+              return false;
+            } else {
+              return true;
+            }
+
+            // Object.keys(indexList).forEach((key, index, array) => {
+            //   // console.log(indexList[key]);
+            //   // console.log(item[key]);
+            //   if (indexList[key] !== "") {
+            //     if (indexList[key] !== item[key]) {
+            //       console.log(false);
+            //       return false;
+            //     }
+            //   }
+
+            //   if (index === array.length - 1) {
+            //     console.log(true);
+            //     return item;
+            //   }
+            // });
+          });
         }
       },
     });
@@ -215,37 +241,9 @@ const AmLeads = ({
 
   return (
     <Fragment>
-      {/* <Button
-        onClick={() => setNewLeadOpenPopup(true)}
-        variant="contained"
-        color="primary"
-        className={classes.uploadModalPopupButton}
-      >
-        <BackupIcon className={classes.uploadIcon} />
-        Upload
-      </Button> */}
       <Paper className={classes.pageContent}>
         <Toolbar>
-          <Controls.Input
-            label="搜索微信号"
-            className={classes.searchInput}
-            name="wechatId"
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
-          <Controls.Button
-            text="上传"
-            variant="outlined"
-            startIcon={<AddIcon />}
-            className={classes.addNewButton}
-            // onClick={() => setNewLeadOpenPopup(true)}
-          />
+          <FilterBar handleSearch={handleSearch} />
         </Toolbar>
         <TblContainer>
           <TblHead />

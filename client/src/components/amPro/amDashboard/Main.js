@@ -1,12 +1,12 @@
-import React, { Fragment } from "react";
-import { connect } from "react-redux";
+import React, { useState, useEffect } from "react";
+import { connect, useSelector } from "react-redux";
 import clsx from "clsx";
+import { getDate } from "../../config/Date";
 
-import Grid from "@material-ui/core/Grid";
-import Paper from "@material-ui/core/Paper";
+import { Grid, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import Chart from "./Chart";
+import { Chart } from "./Chart";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -27,37 +27,126 @@ const useStyles = makeStyles((theme) => ({
     fontSize: "14px",
     lineHeight: "30px",
   },
-  fixedHeight: {
+  fixedHeight1: {
+    height: 300,
+  },
+  fixedHeight2: {
     height: 240,
+  },
+  informationContent: {
+    marginBottom: theme.spacing(2),
   },
 }));
 
 const Main = ({ user }) => {
   const classes = useStyles();
 
-  const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
+  const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
+  const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
+
+  const allLeads = useSelector((state) => state.am.allLeads);
+  const [leadsIndex, setLeadsIndex] = useState({
+    delay: [],
+    today: [],
+    weekLater: [],
+  });
+
+  const calculateLeads = () => {
+    let delay = [];
+    let today = [];
+    let weekLater = [];
+
+    const todayDate = getDate();
+    const todayYear = todayDate.split("-")[0];
+    const todayMonth = todayDate.split("-")[1];
+    const todayDay = todayDate.split("-")[2];
+    const todaySum = todayYear * 10000 + todayMonth * 100 + todayDay * 1;
+
+    if (allLeads.length > 0) {
+      const processing = new Promise((resolve, reject) => {
+        allLeads.forEach((item, index, array) => {
+          if (item.followUpDate) {
+            const leadDate = item.followUpDate;
+            const leadYear = leadDate.split("-")[0];
+            const leadMonth = leadDate.split("-")[1];
+            const leadDay = leadDate.split("-")[2];
+            const leadSum = leadYear * 10000 + leadMonth * 100 + leadDay * 1;
+
+            if (leadSum < todaySum) {
+              delay.push(item);
+            } else if (leadSum === todaySum) {
+              today.push(item);
+            } else {
+              weekLater.push(item);
+            }
+          }
+          if (index === array.length - 1) resolve();
+        });
+      });
+
+      processing.then(() => {
+        setLeadsIndex({
+          delay,
+          today,
+          weekLater,
+        });
+      });
+    }
+  };
+
+  useEffect(() => {
+    calculateLeads();
+  }, [allLeads]);
 
   return (
     <div className={classes.root}>
       <Grid container spacing={3}>
-        <Grid item xs={12} md={8} lg={9}>
-          <Paper className={fixedHeightPaper}>
-            <Chart />
+        <Grid item xs={12} md={9} lg={9}>
+          <Paper className={fixedHeightPaper1}>{/* <Chart /> */}</Paper>
+        </Grid>
+        <Grid item xs={12} md={3} lg={3}>
+          <Paper className={fixedHeightPaper2}>
+            <Typography
+              variant="body1"
+              color="primary"
+              noWrap
+              className={classes.informationContent}
+            >
+              User: {user.name}
+            </Typography>
+            <Typography
+              variant="body1"
+              color="primary"
+              noWrap
+              className={classes.informationContent}
+            >
+              今日Follow Up数量：{leadsIndex.today.length}
+            </Typography>
+            <Typography
+              variant="body1"
+              color="primary"
+              noWrap
+              className={classes.informationContent}
+            >
+              延迟未完成：{leadsIndex.delay.length}
+            </Typography>
+            <Typography
+              variant="body1"
+              color="primary"
+              noWrap
+              className={classes.informationContent}
+            >
+              未来一周需完成：{leadsIndex.weekLater.length}
+            </Typography>
           </Paper>
         </Grid>
-        <Grid item xs={12} md={4} lg={3}>
-          <Paper className={fixedHeightPaper}>
-            User: {user.name}
-            {/* Title: {title} */}
-          </Paper>
-        </Grid>
-        <Grid item xs={12}>
+        {/* <Grid item xs={12}>
           <Paper className={classes.paper2}>
             <div>今日Follow Up数量：0</div>
             <div>已完成：0</div>
             <div>待完成：0</div>
           </Paper>
-        </Grid>
+        </Grid> */}
         {/* <Grid item xs={12}>
           <Paper className={classes.paper2}>
             <div>

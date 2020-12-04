@@ -11,6 +11,9 @@ import {
   AM_SAVING_PROFILELEAD,
   AM_UPLOAD_SINGLE_PROFILE,
   AM_DELETE_SINGLE_PROFILE,
+  AM_SETTING,
+  AM_SET_STATISTIC,
+  AM_LOADING_FINISH,
 } from "./types";
 
 // // Lookup wechat from database
@@ -244,7 +247,7 @@ export const getAllColleges = () => async (dispatch) => {
 // get all profiles belong to current user
 export const getAllProfiles = () => async (dispatch) => {
   try {
-    const res = await axios.get("api/am/profiles/index");
+    const res = await axios.get("/api/am/profiles/index");
 
     let payload = [];
 
@@ -262,6 +265,45 @@ export const getAllProfiles = () => async (dispatch) => {
         type: AM_LOAD_ALL_PROFILES,
         payload,
       });
+    });
+  } catch (err) {
+    handleProError(err, dispatch);
+  }
+};
+
+// Update User Setting
+export const updatingUserSetting = (payload) => async (dispatch) => {
+  try {
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+      },
+    };
+    const body = JSON.stringify(payload);
+    await axios.post("/api/am/setting", body, config);
+
+    await dispatch({
+      type: AM_SETTING,
+      payload,
+    });
+
+    dispatch(setAlert("已保存修改！", "success"));
+  } catch (err) {
+    handleProError(err, dispatch);
+  }
+};
+
+// Get statistic
+export const getStatistic = () => async (dispatch) => {
+  try {
+    const res = await axios.get("/api/am/statistic");
+    const payload = res.data;
+    await dispatch({
+      type: AM_SET_STATISTIC,
+      payload,
+    });
+    await dispatch({
+      type: AM_LOADING_FINISH,
     });
   } catch (err) {
     handleProError(err, dispatch);

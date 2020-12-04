@@ -19,20 +19,23 @@ export const loadUser = () => async (dispatch) => {
 
     const res = await axios.get("/api/auth");
 
-    dispatch({
+    await dispatch({
       type: USER_LOADED,
       payload: res.data,
     });
   } catch (err) {
-    const errors = err.response.data.errors;
+    console.log(err);
+    if (err.response) {
+      const errors = err.response.data.errors;
 
-    if (errors) {
-      errors.forEach((error) => dispatch(setAlert(error.msg, "warning")));
+      if (errors) {
+        errors.forEach((error) => dispatch(setAlert(error.msg, "warning")));
+      }
+
+      dispatch({
+        type: AUTH_ERROR,
+      });
     }
-
-    dispatch({
-      type: AUTH_ERROR,
-    });
   }
 };
 

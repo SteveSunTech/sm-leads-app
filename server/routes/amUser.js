@@ -91,6 +91,9 @@ const newLead = async (
     keywordString = keywords.join(" ");
   }
 
+  console.log(intention);
+  console.log(followUpDate);
+
   try {
     const user = await AmUser.findById(req.user);
     // const group = await Group.findOne({ collegeDisplay: college });
@@ -119,12 +122,15 @@ const newLead = async (
     });
 
     // Check if new leads belongs to others profile
-    const profile = await Profile.findOne({ ProfileID: profileID });
-    if (profile.createdUserID !== req.user) {
-      wechatNew.participateUser = [
-        { UserID: profile.createdUserID, UserDisplay: profile.createdUser },
-      ];
+    if (!req.body.makeProfile) {
+      const profile = await Profile.findOne({ ProfileID: profileID });
+      if (profile.createdUserID !== req.user) {
+        wechatNew.participateUser = [
+          { UserID: profile.createdUserID, UserDisplay: profile.createdUser },
+        ];
+      }
     }
+
     await wechatNew.save();
 
     // console.log(wechatNew);
@@ -351,5 +357,51 @@ router.get("/profiles/index", auth, async (req, res) => {
     return res.status(400).json({ errors: [{ msg: error }] });
   }
 });
+
+// @route      Post /api/am/setting
+// @desc       Change user setting
+// @access     private
+router.post("/setting", auth, async (req, res) => {
+  const { name, preference } = req.body;
+  let user = await AmUser.findById(req.body._id);
+  user.name = name;
+  user.preference.table.paginationRows = preference.table.paginationRows;
+  await user.save();
+  res.json("Success!");
+});
+
+// @route      Get /api/am/statistic
+// @desc       Get data statistc
+// @access     private
+router.get("/statistic", auth, async (req, res) => {
+  let wechats = await WechatNew.find({ amUser: req.user });
+  let otherWechats = await WechatNew.find({
+    "participateUser.UserID": req.user,
+  });
+  wechats = wechats.concat(otherWechats);
+  leadsStatistic(wechats, res);
+});
+
+const leadsStatistic = (wechats, res) => {
+  let collegeDistribution = {};
+  const collegeDistributionProcessing = new Promise((resolve, reject) => {
+    wechats.forEach((item, index, array) => {
+      if (item.collegeDisplay) {
+        collegeDistribution[item.collegeDisplay] =
+          (collegeDistribution[item.collegeDisplay] || 0) + 1;
+      }
+      // console.log(collegeDistribution);
+      if (index === array.length - 1) resolve();
+    });
+  });
+  collegeDistributionProcessing
+    .then(() => {
+      // console.log(collegeDistribution);
+      return res.json({ collegeDistribution });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
 
 module.exports = router;

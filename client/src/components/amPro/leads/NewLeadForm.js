@@ -175,8 +175,8 @@ const NewLeadForm = ({
     }
 
     if (ProfileID) {
-      console.log(currentProfile);
-      console.log(user.email);
+      // console.log(currentProfile);
+      // console.log(user.email);
       const payload = {
         collegeDisplay: college,
         country,

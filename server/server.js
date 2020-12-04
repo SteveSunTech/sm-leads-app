@@ -50,3 +50,4 @@ app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
 const data = require("./dataModification/data");
 // data.profileGenerator();
 // data.leadsUpdateCheck();
+// data.amUserModification();

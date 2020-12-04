@@ -65,6 +65,46 @@ const amUserSchema = mongoose.Schema({
   name: {
     type: String,
   },
+  preference: {
+    table: {
+      paginationRows: {
+        type: Number,
+        default: 10,
+      },
+      heading: {
+        profile: [
+          {
+            id: {
+              type: String,
+            },
+            label: {
+              type: String,
+            },
+          },
+        ],
+        lead: [
+          {
+            id: {
+              type: String,
+            },
+            label: {
+              type: String,
+            },
+          },
+        ],
+        basicUser: [
+          {
+            id: {
+              type: String,
+            },
+            label: {
+              type: String,
+            },
+          },
+        ],
+      },
+    },
+  },
 });
 
 module.exports = basicUser = mongoose.model("amUser", amUserSchema);

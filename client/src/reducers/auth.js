@@ -6,6 +6,7 @@ import {
   LOGIN_SUCCESS,
   LOGIN_FAIL,
   LOGOUT,
+  AM_SETTING,
 } from "../actions/types";
 
 const initialState = {
@@ -55,6 +56,9 @@ export default function (state = initialState, action) {
         title: null,
         user: null,
       };
+    case AM_SETTING:
+      state.user = payload;
+      return state;
     default:
       return state;
   }

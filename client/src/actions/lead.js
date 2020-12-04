@@ -25,13 +25,16 @@ export const updateSingleLead = (
   keywords,
   note,
   leadID,
-  intention
+  intention,
+  differentArray
 ) => async (dispatch) => {
   const config = {
     headers: {
       "Content-Type": "application/json",
     },
   };
+
+  console.log(differentArray);
 
   const body = JSON.stringify({
     wechat,
@@ -42,6 +45,7 @@ export const updateSingleLead = (
     keywords,
     note,
     intention,
+    differentArray,
   });
 
   try {

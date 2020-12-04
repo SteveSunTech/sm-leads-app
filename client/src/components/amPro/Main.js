@@ -19,17 +19,25 @@ import MenuIcon from "@material-ui/icons/Menu";
 import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
+// Actions
 import { loadUser } from "../../actions/auth";
 import { logout } from "../../actions/auth";
+import {
+  getAllLeads,
+  getAllProfiles,
+  getStatistic,
+  getAllColleges,
+} from "../../actions/am";
+
+// Components
 import Dashboard from "./amDashboard/Main";
 import BasicManage from "./BasicManage";
 import AmLeads from "./AmLeads";
 import SubAlert from "../ui/SubAlert";
-import LeadFollowUp from "./LeadFollowUp";
-import { getAllLeads, getAllProfiles } from "../../actions/am";
-import { getAllColleges } from "../../actions/am";
+import LeadFollowUp from "./leadsFollowUp/Main";
 import { MainListItems } from "./MenuList";
 import Profiles from "./profiles/index";
+import Setting from "./setting/Main";
 // import NewLeadForm from "./leads/LeadDetailForm";
 
 function Copyright() {
@@ -135,10 +143,12 @@ const Main = ({
   getAllLeads,
   getAllColleges,
   getAllProfiles,
+  getStatistic,
 }) => {
   const token = useSelector((state) => state.auth.token);
 
   useEffect(() => {
+    // getStatistic();
     getAllLeads();
     getAllColleges();
     getAllProfiles();
@@ -225,7 +235,10 @@ const Main = ({
           </IconButton>
         </div>
         <Divider />
-        <MainListItems setMainComponent={setMainComponent} />
+        <MainListItems
+          setMainComponent={setMainComponent}
+          mainComponent={mainComponent}
+        />
         <Divider />
         {/* Add secondary list here is the future!  */}
       </Drawer>
@@ -247,6 +260,8 @@ const Main = ({
             "Test"
           ) : mainComponent === "Profiles" ? (
             <Profiles />
+          ) : mainComponent === "Setting" ? (
+            <Setting />
           ) : null}
           <Box pt={4}>
             <Copyright />
@@ -269,4 +284,5 @@ export default connect(mapStateToProps, {
   getAllLeads,
   getAllColleges,
   getAllProfiles,
+  getStatistic,
 })(Main);

@@ -8,12 +8,16 @@ import {
   AM_UPLOAD_SINGLE_PROFILE,
   AM_UPDATE_SINGLE_PROFILE,
   AM_DELETE_SINGLE_PROFILE,
+  AM_SET_STATISTIC,
+  AM_LOADING_FINISH,
 } from "../actions/types";
 
 const initialState = {
   allLeads: [],
   allColleges: [],
   allProfiles: [],
+  statitc: {},
+  loading: null,
 };
 
 export default function (state = initialState, action) {
@@ -50,6 +54,12 @@ export default function (state = initialState, action) {
       return state;
     case AM_DELETE_SINGLE_PROFILE:
       state.allProfiles = state.allProfiles.filter((e) => e._id !== payload);
+      return state;
+    case AM_SET_STATISTIC:
+      state.statitc = payload;
+      return state;
+    case AM_LOADING_FINISH:
+      state.loading = true;
       return state;
     default:
       return state;

@@ -5,6 +5,7 @@ const auth = require("../middleware/auth");
 const date = require("../utils/Date");
 const WechatNew = require("../models/WeChatNew");
 const College = require("../models/College");
+const AmUser = require("../models/AmUser");
 
 // @route      Get api/lead/:id
 // @desc       get single lead detail by ID
@@ -24,6 +25,7 @@ router.get("/:id", auth, async (req, res) => {
 router.post("/update/:id", auth, async (req, res) => {
   try {
     const lead = await WechatNew.findById(req.params.id);
+    const user = await AmUser.findById(req.user);
 
     // console.log(req.body);
 
@@ -36,6 +38,7 @@ router.post("/update/:id", auth, async (req, res) => {
       keywords,
       note,
       intention,
+      differentArray,
     } = req.body;
 
     // 计算follow up时间
@@ -53,7 +56,7 @@ router.post("/update/:id", auth, async (req, res) => {
       followUp = true;
     }
 
-    const collegeData = College.findOne({ name: college });
+    const collegeData = await College.findOne({ name: college });
 
     lead.wechatId = wechat;
     lead.status = status;
@@ -68,6 +71,15 @@ router.post("/update/:id", auth, async (req, res) => {
     lead.collegeDisplay = college;
     lead.intention = intention;
     lead.followUpDate = followUpDate;
+
+    const updatedLog = {
+      UserDisplay: user.email,
+      updateDate: Date.now(),
+      updateDateDisplay: date,
+      logID: Date.now() + "_" + user.email,
+      content: differentArray,
+    };
+    lead.updatedLog.push(updatedLog);
 
     await lead.save();
 
