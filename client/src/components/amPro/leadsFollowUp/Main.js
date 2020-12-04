@@ -34,15 +34,18 @@ const LeadFollowUp = () => {
   const allLeads = useSelector((state) => state.am.allLeads);
 
   const [leadsIndex, setLeadsIndex] = useState({
-    delay: [],
-    today: [],
-    weekLater: [],
+    delayTask: [],
+    todayTask: [],
+    weekLaterTask: [],
+    todayFinishTask: [],
   });
 
   const calculateLeads = () => {
-    let delay = [];
-    let today = [];
-    let weekLater = [];
+    let delayTask = [];
+    let todayTask = [];
+    let weekLaterTask = [];
+    let todayFinishTask = [];
+    let monthFinishTask = [];
 
     const todayDate = getDate();
     const todayYear = todayDate.split("-")[0];
@@ -61,22 +64,32 @@ const LeadFollowUp = () => {
             const leadSum = leadYear * 10000 + leadMonth * 100 + leadDay * 1;
 
             if (leadSum < todaySum) {
-              delay.push(item);
+              delayTask.push(item);
             } else if (leadSum === todaySum) {
-              today.push(item);
+              todayTask.push(item);
             } else {
-              weekLater.push(item);
+              weekLaterTask.push(item);
             }
           }
+
+          if (item.updatedLog.length > 0) {
+            const logDate =
+              item.updatedLog[item.updatedLog.length - 1].updateDateDisplay;
+            if (logDate === todayDate) {
+              todayFinishTask.push(item);
+            }
+          }
+
           if (index === array.length - 1) resolve();
         });
       });
 
       processing.then(() => {
         setLeadsIndex({
-          delay,
-          today,
-          weekLater,
+          delayTask,
+          todayTask,
+          weekLaterTask,
+          todayFinishTask,
         });
       });
     }
@@ -88,9 +101,10 @@ const LeadFollowUp = () => {
 
   return (
     <div className={classes.root}>
-      <TaskBlock title={"延迟的任务"} index={leadsIndex.delay} />
-      <TaskBlock title={"今日任务"} index={leadsIndex.today} />
-      <TaskBlock title={"未来一周任务"} index={leadsIndex.weekLater} />
+      <TaskBlock title={"延迟的任务"} index={leadsIndex.delayTask} />
+      <TaskBlock title={"今日任务"} index={leadsIndex.todayTask} />
+      <TaskBlock title={"今日已完成"} index={leadsIndex.todayFinishTask} />
+      <TaskBlock title={"未来一周任务"} index={leadsIndex.weekLaterTask} />
     </div>
   );
 };

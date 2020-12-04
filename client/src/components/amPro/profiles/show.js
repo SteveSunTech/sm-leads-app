@@ -61,8 +61,9 @@ const useStyles = makeStyles((theme) => ({
     marginBottom: theme.spacing(2),
   },
   addNewButton: {
-    position: "absolute",
-    right: "10px",
+    // position: "absolute",
+    // right: "10px",
+    marginLeft: "50px",
   },
   participantButton: {
     marginTop: "-15px",
@@ -420,18 +421,25 @@ const ProfileDetail = ({
       >
         <Box>
           <Toolbar>
-            <Typography variant="h4" color="primary">
-              Lead
-            </Typography>
-            {profileBelongsToCurrentUser ? (
-              <Controls.Button
-                text="上传"
-                variant="outlined"
-                startIcon={<AddIcon />}
-                className={classes.addNewButton}
-                onClick={() => setNewSimpleLeadOpenPopup(true)}
-              />
-            ) : null}
+            <Grid container>
+              <Grid item xs={2}>
+                <Typography variant="h4" color="primary">
+                  Lead
+                </Typography>
+              </Grid>
+              <Grid item xs={8}></Grid>
+              <Grid item xs={2}>
+                {profileBelongsToCurrentUser ? (
+                  <Controls.Button
+                    text="上传"
+                    variant="outlined"
+                    startIcon={<AddIcon />}
+                    className={classes.addNewButton}
+                    onClick={() => setNewSimpleLeadOpenPopup(true)}
+                  />
+                ) : null}
+              </Grid>
+            </Grid>
           </Toolbar>
           <TblContainer>
             <TblHead />

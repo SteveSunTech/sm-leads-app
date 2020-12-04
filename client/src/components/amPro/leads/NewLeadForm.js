@@ -82,6 +82,8 @@ const NewLeadForm = ({
       temp.college = fieldValues.college ? "" : "必须选择学校！";
     if ("status" in fieldValues)
       temp.status = fieldValues.status ? "" : "必须选择状态！";
+    if ("intention" in fieldValues && status === "未购买")
+      temp.intention = fieldValues.intention ? "" : "必须选择购买意向！";
     setErrors({
       ...temp,
     });

@@ -88,6 +88,8 @@ const LeadDetailForm = ({
       temp.college = fieldValues.college ? "" : "必须选择学校！";
     if ("status" in fieldValues)
       temp.status = fieldValues.status ? "" : "必须选择状态！";
+    if ("intention" in fieldValues && status === "未购买")
+      temp.intention = fieldValues.intention ? "" : "必须选择购买意向！";
     setErrors({
       ...temp,
     });
@@ -213,7 +215,23 @@ const LeadDetailForm = ({
             });
           }
         }
-        if (index === array.length - 1) resolve();
+        // console.log(differentArray);
+        // console.log(updated);
+        // console.log(item);
+        if (index === array.length - 1) {
+          if (
+            !differentArray.intention &&
+            updated.status === "未购买" &&
+            original.status === "未购买"
+          ) {
+            differentArray.push({
+              name: "intention",
+              old: original.intention,
+              new: intentionOptions()[updated.intentionID - 1].title,
+            });
+          }
+          resolve();
+        }
       });
     });
     processing.then(() => {

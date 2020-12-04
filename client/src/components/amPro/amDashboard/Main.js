@@ -46,15 +46,17 @@ const Main = ({ user }) => {
 
   const allLeads = useSelector((state) => state.am.allLeads);
   const [leadsIndex, setLeadsIndex] = useState({
-    delay: [],
-    today: [],
-    weekLater: [],
+    delayTask: [],
+    todayTask: [],
+    weekLaterTask: [],
+    todayFinishTask: [],
   });
 
   const calculateLeads = () => {
-    let delay = [];
-    let today = [];
-    let weekLater = [];
+    let delayTask = [];
+    let todayTask = [];
+    let weekLaterTask = [];
+    let todayFinishTask = [];
 
     const todayDate = getDate();
     const todayYear = todayDate.split("-")[0];
@@ -73,22 +75,32 @@ const Main = ({ user }) => {
             const leadSum = leadYear * 10000 + leadMonth * 100 + leadDay * 1;
 
             if (leadSum < todaySum) {
-              delay.push(item);
+              delayTask.push(item);
             } else if (leadSum === todaySum) {
-              today.push(item);
+              todayTask.push(item);
             } else {
-              weekLater.push(item);
+              weekLaterTask.push(item);
             }
           }
+
+          if (item.updatedLog.length > 0) {
+            const logDate =
+              item.updatedLog[item.updatedLog.length - 1].updateDateDisplay;
+            if (logDate === todayDate) {
+              todayFinishTask.push(item);
+            }
+          }
+
           if (index === array.length - 1) resolve();
         });
       });
 
       processing.then(() => {
         setLeadsIndex({
-          delay,
-          today,
-          weekLater,
+          delayTask,
+          todayTask,
+          weekLaterTask,
+          todayFinishTask,
         });
       });
     }
@@ -120,7 +132,7 @@ const Main = ({ user }) => {
               noWrap
               className={classes.informationContent}
             >
-              今日Follow Up数量：{leadsIndex.today.length}
+              今日待完成：{leadsIndex.todayTask.length}
             </Typography>
             <Typography
               variant="body1"
@@ -128,7 +140,7 @@ const Main = ({ user }) => {
               noWrap
               className={classes.informationContent}
             >
-              延迟未完成：{leadsIndex.delay.length}
+              今日已完成：{leadsIndex.todayFinishTask.length}
             </Typography>
             <Typography
               variant="body1"
@@ -136,7 +148,15 @@ const Main = ({ user }) => {
               noWrap
               className={classes.informationContent}
             >
-              未来一周需完成：{leadsIndex.weekLater.length}
+              延迟未完成：{leadsIndex.delayTask.length}
+            </Typography>
+            <Typography
+              variant="body1"
+              color="primary"
+              noWrap
+              className={classes.informationContent}
+            >
+              未来一周需完成：{leadsIndex.weekLaterTask.length}
             </Typography>
           </Paper>
         </Grid>

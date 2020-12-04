@@ -20,7 +20,7 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import UnfoldMoreIcon from "@material-ui/icons/UnfoldMore";
 
 // Actions
-import { updateSingleLead } from "../../../actions/lead";
+// import { updateSingleLead } from "../../../actions/lead";
 import { deleteSingleLead } from "../../../actions/lead";
 
 // Components
@@ -85,7 +85,6 @@ const TaskBlock = ({ title, index }) => {
     },
   });
   const [tableDisplay, setTableDisplay] = useState("none");
-  const [newLeadOpenPopup, setNewLeadOpenPopup] = useState(false);
   const [leadDetialOpenPopup, setLeadDetailOpenPopup] = useState(false);
 
   useEffect(() => {

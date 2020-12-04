@@ -91,9 +91,6 @@ const newLead = async (
     keywordString = keywords.join(" ");
   }
 
-  console.log(intention);
-  console.log(followUpDate);
-
   try {
     const user = await AmUser.findById(req.user);
     // const group = await Group.findOne({ collegeDisplay: college });

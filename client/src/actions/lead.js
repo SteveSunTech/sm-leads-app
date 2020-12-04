@@ -34,7 +34,7 @@ export const updateSingleLead = (
     },
   };
 
-  console.log(differentArray);
+  // console.log(differentArray);
 
   const body = JSON.stringify({
     wechat,

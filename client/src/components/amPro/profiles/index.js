@@ -11,6 +11,7 @@ import {
   Tooltip,
   Toolbar,
   InputAdornment,
+  Grid,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
 // import BackupIcon from "@material-ui/icons/Backup";
@@ -74,11 +75,12 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
   searchInput: {
-    width: "75%",
+    width: "120%",
   },
   addNewButton: {
-    position: "absolute",
-    right: "10px",
+    // position: "absolute",
+    // right: "10px",
+    marginTop: "-10px",
   },
 }));
 
@@ -175,26 +177,33 @@ const AmProfiles = ({
       <Box display={indexDisplay}>
         <Paper className={classes.pageContent}>
           <Toolbar>
-            <Controls.Input
-              label="搜索微信号"
-              className={classes.searchInput}
-              name="wechatId"
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <Search />
-                  </InputAdornment>
-                ),
-              }}
-              onChange={handleSearch}
-            />
-            <Controls.Button
-              text="新建"
-              variant="outlined"
-              startIcon={<AddIcon />}
-              className={classes.addNewButton}
-              onClick={() => setNewRecordOpenPopup(true)}
-            />
+            <Grid container spacing={5}>
+              <Grid item xs={8}>
+                <Controls.Input
+                  label="搜索微信号"
+                  className={classes.searchInput}
+                  name="wechatId"
+                  InputProps={{
+                    startAdornment: (
+                      <InputAdornment position="start">
+                        <Search />
+                      </InputAdornment>
+                    ),
+                  }}
+                  onChange={handleSearch}
+                />
+              </Grid>
+              <Grid item xs={2}></Grid>
+              <Grid item xs={2}>
+                <Controls.Button
+                  text="新建"
+                  variant="outlined"
+                  startIcon={<AddIcon />}
+                  className={classes.addNewButton}
+                  onClick={() => setNewRecordOpenPopup(true)}
+                />
+              </Grid>
+            </Grid>
           </Toolbar>
           <TblContainer>
             <TblHead />
