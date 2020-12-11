@@ -13,15 +13,19 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-// import BackupIcon from "@material-ui/icons/Backup";
+
+// Icons
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Search } from "@material-ui/icons";
 import AddIcon from "@material-ui/icons/Add";
-// import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 
+// Reusable & Config
 import useTable from "../../reusable/useTable";
 import Controls from "../../reusable/controls/Controls";
+
+// Components
+import UserDetail from "./Show";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -88,18 +92,10 @@ const AdminUsers = ({
 }) => {
   const classes = useStyles();
 
-  //***************************************************************
-  // All leads list table
-  // **************************************************************
   const [records, setRecords] = useState(allUsers);
-  // Disc List with update date
-  // let sortedList = records;
-  // console.log(allLeads);
-  // sortedList = sortedList.map((el, index) => [el, index]);
-  // sortedList = sortedList.sort((a, b) => {
-  //   return b["updateDateDisplay"] - a["updateDateDisplay"];
-  // });
-  // setRecords(sortedList);
+  const [indexDisplay, setIndexDisplay] = useState("block");
+  const [detailDisplay, setDetailDisplay] = useState("none");
+  const [userID, setUserID] = useState();
 
   const [filterFn, setFilterFn] = useState({
     fn: (items) => {
@@ -132,6 +128,18 @@ const AdminUsers = ({
     setRecords(allUsers);
   }, [allUsers]);
 
+  // Load user and handle display
+  const loadUser = (user) => {
+    setUserID(user._id);
+    setIndexDisplay("none");
+    setDetailDisplay("block");
+  };
+
+  const backToIndex = () => {
+    setIndexDisplay("block");
+    setDetailDisplay("none");
+  };
+
   return (
     <Fragment>
       {/* <Button
@@ -143,57 +151,69 @@ const AdminUsers = ({
         <BackupIcon className={classes.uploadIcon} />
         Upload
       </Button> */}
-      <Paper className={classes.pageContent}>
-        <Toolbar>
-          <Controls.Input
-            label="搜索用户"
-            className={classes.searchInput}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search />
-                </InputAdornment>
-              ),
-            }}
-            onChange={handleSearch}
-          />
-          <Controls.Button
-            text="添加用户"
-            variant="outlined"
-            startIcon={<AddIcon />}
-            className={classes.addNewButton}
-          />
-        </Toolbar>
-        <TblContainer>
-          <TblHead />
-          <TableBody>
-            {recordsAfterPagingAndSorting().map((item) => (
-              <TableRow key={item.id}>
-                <TableCell align="center">{item.name}</TableCell>
-                <TableCell align="center">{item.email}</TableCell>
-                <TableCell align="center">{item.area}</TableCell>
-                <TableCell align="center">
-                  <Box component="span">
-                    <Tooltip title="编辑" arrow>
-                      <IconButton>
-                        <EditIcon color="primary" fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                  <Box component="span">
-                    <Tooltip title="删除" arrow>
-                      <IconButton>
-                        <DeleteIcon color="secondary" fontSize="small" />
-                      </IconButton>
-                    </Tooltip>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </TblContainer>
-        <TblPagination />
-      </Paper>
+      <Box display={indexDisplay}>
+        <Paper className={classes.pageContent}>
+          <Toolbar>
+            <Controls.Input
+              label="搜索用户"
+              className={classes.searchInput}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search />
+                  </InputAdornment>
+                ),
+              }}
+              onChange={handleSearch}
+            />
+            <Controls.Button
+              text="添加用户"
+              variant="outlined"
+              startIcon={<AddIcon />}
+              className={classes.addNewButton}
+            />
+          </Toolbar>
+          <TblContainer>
+            <TblHead />
+            <TableBody>
+              {recordsAfterPagingAndSorting().map((item) => (
+                <TableRow key={item.id}>
+                  <TableCell align="center">{item.name}</TableCell>
+                  <TableCell align="center">{item.email}</TableCell>
+                  <TableCell align="center">{item.area}</TableCell>
+                  <TableCell align="center">
+                    <Box
+                      component="span"
+                      onClick={() => {
+                        loadUser(item);
+                      }}
+                    >
+                      <Tooltip title="编辑" arrow>
+                        <IconButton>
+                          <EditIcon color="primary" fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                    <Box component="span">
+                      <Tooltip title="删除" arrow>
+                        <IconButton>
+                          <DeleteIcon color="secondary" fontSize="small" />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </TblContainer>
+          <TblPagination />
+        </Paper>
+      </Box>
+      <Box display={detailDisplay}>
+        <Paper className={classes.pageContent}>
+          <UserDetail setOpen={backToIndex} userID={userID} />
+        </Paper>
+      </Box>
     </Fragment>
   );
 };

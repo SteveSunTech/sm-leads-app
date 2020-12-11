@@ -1,4 +1,5 @@
 import axios from "axios";
+import { setAlert } from "./subAlert";
 import handleProError from "../utils/HandleProError";
 
 import {
@@ -6,8 +7,12 @@ import {
   ADMIN_LOAD_ALL_USERS,
   ADMIN_LOAD_ALL_LEADS,
   ADMIN_LOAD_ANALYZE_USER_LEADS,
+  ADMIN_COLLEGES_NEW,
+  ADMIN_COLLEGES_DELETE,
+  ADMIN_USER_UPDATE,
 } from "./types";
 
+// Add a new college
 export const addNewCollege = (name, area) => async (dispatch) => {
   const config = {
     headers: {
@@ -18,8 +23,12 @@ export const addNewCollege = (name, area) => async (dispatch) => {
   const body = JSON.stringify({ name, area });
 
   try {
-    const res = axios.post("/api/admin/college/new", body, config);
-    console.log(res);
+    const res = await axios.post("/api/admin/college/new", body, config);
+    const payload = res.data.newCollege;
+
+    await dispatch({ type: ADMIN_COLLEGES_NEW, payload });
+
+    await dispatch(setAlert(`学校：${name}， 添加成功！`, "success"));
   } catch (err) {
     console.log(err);
   }
@@ -112,8 +121,18 @@ export const AssignCollegeToUser = (email, college) => async (dispatch) => {
   const body = JSON.stringify({ email, college });
 
   try {
+    let payload;
     const res = axios.post("/api/admin/user/college/assign", body, config);
-    console.log(res);
+    res.then(async (val) => {
+      payload = val.data.user;
+      await dispatch({
+        type: ADMIN_USER_UPDATE,
+        payload,
+      });
+      await dispatch(
+        setAlert(`学校：${college}， 成功分配至用户：${email}！`, "success")
+      );
+    });
   } catch (err) {
     console.log(err);
   }

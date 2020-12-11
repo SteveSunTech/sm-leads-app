@@ -34,7 +34,12 @@ const NewRecord = ({
   let found;
   const searchProfiles = () => {
     const searchRedux = new Promise((resolve, reject) => {
+      if (allProfiles.length === 0) {
+        resolve();
+      }
       allProfiles.forEach((item, index, array) => {
+        console.log(array.length);
+        // if (array.length === 0)
         if (item.wechatId == searchContent) {
           found = item;
           resolve();

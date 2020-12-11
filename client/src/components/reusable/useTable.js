@@ -34,13 +34,15 @@ const useStyles = makeStyles((theme) => ({
 export default function useTable(records, headCells, filterFn) {
   const classes = useStyles();
 
-  let customizePage = useSelector(
-    (state) => state.auth.user.preference.table.paginationRows
+  let customizePage = useSelector((state) =>
+    state.auth.user.preference
+      ? state.auth.user.preference.table.paginationRows
+      : 10
   );
 
   const pages = [5, 10, 15, 20, 25, 30, 50, 100];
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(customizePage);
+  const [rowsPerPage, setRowsPerPage] = useState(customizePage || 10);
   const [rowsPerPageChange, setRowsPerPageChange] = useState(false);
   const [order, setOrder] = useState();
   const [orderBy, setOrderBy] = useState();

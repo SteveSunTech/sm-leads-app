@@ -1,5 +1,5 @@
 import React, { useState, Fragment, useEffect } from "react";
-import { connect } from "react-redux";
+import { connect, useSelector } from "react-redux";
 
 import {
   IconButton,
@@ -13,15 +13,20 @@ import {
   InputAdornment,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/styles";
-// import BackupIcon from "@material-ui/icons/Backup";
+
+// Icons
 import EditIcon from "@material-ui/icons/Edit";
 import DeleteIcon from "@material-ui/icons/Delete";
 import { Search } from "@material-ui/icons";
 import AddIcon from "@material-ui/icons/Add";
-// import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 
+// Reusable & Config
 import useTable from "../../reusable/useTable";
 import Controls from "../../reusable/controls/Controls";
+import Popup from "../../reusable/Popup";
+
+// Components
+import NewCollegeForm from "./New";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -80,12 +85,11 @@ const headCells = [
   { id: "operation", label: "操作", disableSorting: true },
 ];
 
-const AdminColleges = ({
-  // State
-  allColleges,
-  // Action
-}) => {
+const AdminColleges = () => {
   const classes = useStyles();
+
+  const allColleges = useSelector((state) => state.admin.allColleges);
+  const [newCollegeOpenPopUp, setNewCollegeOpenPopUp] = useState(false);
 
   //***************************************************************
   // All leads list table
@@ -120,7 +124,7 @@ const AdminColleges = ({
         if (target.value === "") return items;
         else {
           return items.filter((x) =>
-            x.name.toLowerCase().includes(target.value)
+            x.name.toLowerCase().includes(target.value.toLowerCase())
           );
         }
       },
@@ -130,6 +134,11 @@ const AdminColleges = ({
   useEffect(() => {
     setRecords(allColleges);
   }, [allColleges]);
+
+  // Handle new college form
+  const handleNewCollegeForm = () => {
+    setNewCollegeOpenPopUp(true);
+  };
 
   return (
     <Fragment>
@@ -161,6 +170,7 @@ const AdminColleges = ({
             variant="outlined"
             startIcon={<AddIcon />}
             className={classes.addNewButton}
+            onClick={() => handleNewCollegeForm()}
           />
         </Toolbar>
         <TblContainer>
@@ -192,12 +202,23 @@ const AdminColleges = ({
         </TblContainer>
         <TblPagination />
       </Paper>
+      {/* Lead upload modal */}
+      <Popup
+        openPopup={newCollegeOpenPopUp}
+        setOpenPopup={setNewCollegeOpenPopUp}
+        title="New college"
+        maxWidth="md"
+      >
+        <NewCollegeForm
+          setOpenPopup={setNewCollegeOpenPopUp}
+          initialFValues={{
+            name: "",
+            area: "",
+          }}
+        />
+      </Popup>
     </Fragment>
   );
 };
 
-const mapStateToProps = (state) => ({
-  allColleges: state.admin.allColleges,
-});
-
-export default connect(mapStateToProps, {})(AdminColleges);
+export default connect(null, {})(AdminColleges);

@@ -23,16 +23,18 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 // import NotificationsIcon from '@material-ui/icons/Notifications';
 import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
-// import Deposits from './Deposits';
-// import Orders from './Orders';
+// Components
 import { MainListItems } from "./MenuList";
-import { loadUser } from "../../actions/auth";
-import { logout } from "../../actions/auth";
 import Dashboard from "./adminDashboard/Main";
 import College from "./college/Main";
 import User from "./user/Main";
 import Lead from "./lead/Main";
 import Analyze from "./analyze/Main";
+import SubAlert from "../ui/SubAlert";
+
+// Actions
+import { loadUser } from "../../actions/auth";
+import { logout } from "../../actions/auth";
 import {
   getAllColleges,
   getAllUsers,
@@ -272,6 +274,7 @@ const Main = ({
       <main className={classes.content}>
         <div className={classes.appBarSpacer} />
         <Container maxWidth="lg" className={classes.container}>
+          <SubAlert />
           {mainComponent === "Dashboard" ? (
             <Dashboard />
           ) : mainComponent === "College" ? (

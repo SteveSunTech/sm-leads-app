@@ -13,8 +13,6 @@ const date = require("../utils/Date");
 // @access    Private
 router.post("/college/new", auth, async (req, res) => {
   try {
-    console.log(req.body);
-
     const name = req.body.name;
     const area = req.body.area;
 
@@ -24,7 +22,7 @@ router.post("/college/new", auth, async (req, res) => {
       availability: true,
     });
 
-    newCollege.save();
+    await newCollege.save();
 
     res.json({ newCollege });
   } catch (error) {
@@ -107,6 +105,7 @@ router.get("/lead/index", auth, async (req, res) => {
 // @access    Private
 router.post("/user/college/assign", auth, async (req, res) => {
   try {
+    // console.log(req.body);
     const collegeDisplay = req.body.college;
     const email = req.body.email;
 
@@ -118,7 +117,7 @@ router.post("/user/college/assign", auth, async (req, res) => {
 
     await user.save();
 
-    res.status(200).json("good");
+    return res.json({ user });
   } catch (error) {
     console.log(error);
   }
