@@ -100,22 +100,32 @@ const profileGenerator = async () => {
 
 const leadsUpdateCheck = async () => {
   try {
+    const am = await AmUser.find({});
+    const userList = {};
+    am.forEach((item) => {
+      userList[item._id] = item.name;
+    });
+
     const leads = await Lead.find({});
+
+    const thisWeek = ISO8601_week_no(new Date());
+
     let count = 0;
-    let college;
-    const check = new Promise((resolve, reject) => {
+    const updated = {};
+    const check = new Promise((resolve) => {
       leads.forEach(async (item, index, array) => {
-        if (item.college === undefined) {
-          console.log(item.collegeDisplay);
-          college = await College.find({ name: item.collegeDisplay });
-          console.log(college._id);
-          item.college = college._id;
+        if (ISO8601_week_no(item.updateDate) === thisWeek) {
+          const name = userList[item.amUser];
+          updated[name] =
+            typeof updated[name] === "number" ? updated[name] + 1 : 0;
+          count++;
         }
         if (index === array.length - 1) resolve();
       });
     });
     check.then(() => {
-      console.log(count);
+      console.log(updated);
+      console.log("total: ", count);
     });
   } catch (err) {
     console.log(err);
@@ -123,18 +133,31 @@ const leadsUpdateCheck = async () => {
 };
 
 const amUserModification = async () => {
-  amUser = await AmUser.find({});
-
-  const processing = new Promise((resolve, reject) => {
-    amUser.forEach(async (item, index, array) => {
-      item.preference.table.paginationRows = 10;
-      await item.save();
-      if (index === array.length - 1) resolve();
-    });
-  });
-  processing.then(async () => {
-    console.log("done!");
-  });
+  // const amUser = await AmUser.find({ email: "yli@smcovered.com" });
+  // amUser[0].presidentUser = true;
+  // await amUser[0].save();
+  // const processing = new Promise((resolve, reject) => {
+  //   amUser.forEach(async (item, index, array) => {
+  //     item.preference.table.paginationRows = 10;
+  //     await item.save();
+  //     if (index === array.length - 1) resolve();
+  //   });
+  // });
+  // processing.then(async () => {
+  //   console.log("done!");
+  // });
 };
+
+function ISO8601_week_no(dt) {
+  var tdt = new Date(dt.valueOf());
+  var dayn = (dt.getDay() + 6) % 7;
+  tdt.setDate(tdt.getDate() - dayn + 3);
+  var firstThursday = tdt.valueOf();
+  tdt.setMonth(0, 1);
+  if (tdt.getDay() !== 4) {
+    tdt.setMonth(0, 1 + ((4 - tdt.getDay() + 7) % 7));
+  }
+  return 1 + Math.ceil((firstThursday - tdt) / 604800000);
+}
 
 module.exports = { profileGenerator, leadsUpdateCheck, amUserModification };

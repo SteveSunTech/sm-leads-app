@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import clsx from "clsx";
 import { connect, useSelector } from "react-redux";
 import { Redirect } from "react-router-dom";
+import axios from "axios";
 
 import { makeStyles } from "@material-ui/core/styles";
 import CssBaseline from "@material-ui/core/CssBaseline";
@@ -145,17 +146,29 @@ const Main = ({
   getAllProfiles,
   getStatistic,
 }) => {
+  const classes = useStyles();
+
   const token = useSelector((state) => state.auth.token);
+  const user = useSelector((state) => state.auth.user);
+
+  const [open, setOpen] = useState(true);
+  const [weeklyReport, setWeeklyReport] = useState();
 
   useEffect(() => {
     // getStatistic();
     getAllLeads();
     getAllColleges();
     getAllProfiles();
+
+    if (user && user.presidentUser && user.presidentUser === true) {
+      getWeeklyReport();
+    }
   }, [token]);
 
-  const classes = useStyles();
-  const [open, setOpen] = React.useState(true);
+  const getWeeklyReport = async () => {
+    const userWeekly = await axios.get("/api/am/weeklyreport");
+    setWeeklyReport(userWeekly.data.updated);
+  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -247,7 +260,7 @@ const Main = ({
         <Container maxWidth="lg" className={classes.container}>
           <SubAlert />
           {mainComponent === "Dashboard" ? (
-            <Dashboard />
+            <Dashboard weeklyReport={weeklyReport} />
           ) : mainComponent === "College" ? (
             <div>college</div>
           ) : mainComponent === "校园大使" ? (
@@ -273,7 +286,7 @@ const Main = ({
 };
 
 const mapStateToProps = (state) => ({
-  user: state.auth.user,
+  // user: state.auth.user,
   isAuthenticated: state.auth.isAuthenticated,
   title: state.auth.title,
 });

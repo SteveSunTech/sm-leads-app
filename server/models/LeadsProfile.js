@@ -21,7 +21,7 @@ const LeadsProfileSchema = new Schema({
   },
   createdDate: {
     type: Date,
-    defaule: Date.now(),
+    default: Date.now(),
   },
   createdDateDisplay: {
     type: String,

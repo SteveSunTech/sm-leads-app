@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Main = ({ user }) => {
+const Main = ({ user, weeklyReport }) => {
   const classes = useStyles();
 
   const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
@@ -114,7 +114,21 @@ const Main = ({ user }) => {
     <div className={classes.root}>
       <Grid container spacing={3}>
         <Grid item xs={12} md={9} lg={9}>
-          <Paper className={fixedHeightPaper1}>{/* <Chart /> */}</Paper>
+          <Paper className={fixedHeightPaper1}>
+            {weeklyReport
+              ? Object.keys(weeklyReport).map((item, index) => (
+                  <Typography
+                    variant="body1"
+                    color="primary"
+                    noWrap
+                    className={classes.informationContent}
+                    key={index}
+                  >
+                    {item}: {weeklyReport[item]}
+                  </Typography>
+                ))
+              : null}
+          </Paper>
         </Grid>
         <Grid item xs={12} md={3} lg={3}>
           <Paper className={fixedHeightPaper2}>

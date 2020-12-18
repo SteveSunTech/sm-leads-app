@@ -105,6 +105,10 @@ const amUserSchema = mongoose.Schema({
       },
     },
   },
+  presidentUser: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 module.exports = basicUser = mongoose.model("amUser", amUserSchema);

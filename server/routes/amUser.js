@@ -401,4 +401,52 @@ const leadsStatistic = (wechats, res) => {
     });
 };
 
+// @route      Get /api/am/weeklyreport
+// @desc       Get president user weekly report
+// @access     private
+router.get("/weeklyreport", auth, async (req, res) => {
+  try {
+    const am = await AmUser.find({});
+    const userList = {};
+    am.forEach((item) => {
+      userList[item._id] = item.name;
+    });
+
+    const leads = await WechatNew.find({});
+
+    const thisWeek = ISO8601_week_no(new Date());
+
+    let count = 0;
+    const updated = {};
+    const check = new Promise((resolve) => {
+      leads.forEach(async (item, index, array) => {
+        if (ISO8601_week_no(item.updateDate) === thisWeek) {
+          const name = userList[item.amUser];
+          updated[name] =
+            typeof updated[name] === "number" ? updated[name] + 1 : 0;
+          count++;
+        }
+        if (index === array.length - 1) resolve();
+      });
+    });
+    check.then(() => {
+      return res.json({ updated });
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
+function ISO8601_week_no(dt) {
+  var tdt = new Date(dt.valueOf());
+  var dayn = (dt.getDay() + 6) % 7;
+  tdt.setDate(tdt.getDate() - dayn + 3);
+  var firstThursday = tdt.valueOf();
+  tdt.setMonth(0, 1);
+  if (tdt.getDay() !== 4) {
+    tdt.setMonth(0, 1 + ((4 - tdt.getDay() + 7) % 7));
+  }
+  return 1 + Math.ceil((firstThursday - tdt) / 604800000);
+}
+
 module.exports = router;
