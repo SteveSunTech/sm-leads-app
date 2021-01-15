@@ -148,6 +148,46 @@ const amUserModification = async () => {
   // });
 };
 
+const kpi = async () => {
+  const allSum = {};
+  const amSum = {};
+
+  const userList = {};
+  const am = await AmUser.find({});
+  am.forEach(async (item) => {
+    userList[item._id] = item.name;
+
+    allSum[item.name] = {};
+    allSum[item.name].total = 0;
+    allSum[item.name].thisWeek = 0;
+
+    amSum[item.name] = {};
+    item.college.forEach((co) => {
+      amSum[item.name][co.collegeDisplay] = {};
+
+      amSum[item.name][co.collegeDisplay].college = co.collegeDisplay;
+      amSum[item.name][co.collegeDisplay].collegeID = co.collegeId;
+      amSum[item.name][co.collegeDisplay].total = 0;
+      amSum[item.name][co.collegeDisplay].thisWeek = 0;
+    });
+  });
+
+  // console.log(allSum);
+
+  const leads = await WechatNew.find({});
+  const thisWeek = ISO8601_week_no(new Date());
+
+  leads.forEach((item) => {
+    allSum[userList[item.amUser]].total++;
+    amSum[userList[item.amUser]][item.collegeDisplay].total++;
+
+    if (ISO8601_week_no(item.updateDate) === thisWeek) {
+      allSum[userList[item.amUser]].thisWeek++;
+      amSum[userList[item.amUser]][item.collegeDisplay].thisWeek++;
+    }
+  });
+};
+
 function ISO8601_week_no(dt) {
   var tdt = new Date(dt.valueOf());
   var dayn = (dt.getDay() + 6) % 7;
@@ -160,4 +200,9 @@ function ISO8601_week_no(dt) {
   return 1 + Math.ceil((firstThursday - tdt) / 604800000);
 }
 
-module.exports = { profileGenerator, leadsUpdateCheck, amUserModification };
+module.exports = {
+  profileGenerator,
+  leadsUpdateCheck,
+  amUserModification,
+  kpi,
+};

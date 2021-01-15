@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { connect, useSelector } from "react-redux";
 import clsx from "clsx";
+import axios from "axios";
 import { getDate } from "../../config/Date";
 
 import { Grid, Paper, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 
-import { Chart } from "./Chart";
+import LeaderReport from "./LeaderReport";
+import BasicReport from "./BasicReport";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -28,7 +30,7 @@ const useStyles = makeStyles((theme) => ({
     lineHeight: "30px",
   },
   fixedHeight1: {
-    height: 300,
+    height: "auto",
   },
   fixedHeight2: {
     height: 240,
@@ -38,19 +40,34 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const Main = ({ user, weeklyReport }) => {
+const Main = ({ user }) => {
   const classes = useStyles();
 
   const fixedHeightPaper1 = clsx(classes.paper, classes.fixedHeight1);
   const fixedHeightPaper2 = clsx(classes.paper, classes.fixedHeight2);
 
   const allLeads = useSelector((state) => state.am.allLeads);
+  // const user = useSelector((state) => state.auth.user);
   const [leadsIndex, setLeadsIndex] = useState({
     delayTask: [],
     todayTask: [],
     weekLaterTask: [],
     todayFinishTask: [],
   });
+
+  const [leaderReport, setLeaderReport] = useState({});
+  const [amReport, setAmReport] = useState({});
+  useEffect(() => {
+    if (user && user.presidentUser) {
+      axios.get("/api/am/weeklyreport/leader").then((res) => {
+        setLeaderReport(res.data);
+      });
+    } else {
+      axios.get("/api/am/weeklyreport/basic").then((res) => {
+        setAmReport(res.data.sumTable);
+      });
+    }
+  }, [allLeads]);
 
   const calculateLeads = () => {
     let delayTask = [];
@@ -115,19 +132,14 @@ const Main = ({ user, weeklyReport }) => {
       <Grid container spacing={3}>
         <Grid item xs={12} md={9} lg={9}>
           <Paper className={fixedHeightPaper1}>
-            {weeklyReport
-              ? Object.keys(weeklyReport).map((item, index) => (
-                  <Typography
-                    variant="body1"
-                    color="primary"
-                    noWrap
-                    className={classes.informationContent}
-                    key={index}
-                  >
-                    {item}: {weeklyReport[item]}
-                  </Typography>
-                ))
-              : null}
+            {Object.keys(leaderReport).length === 0 &&
+            leaderReport.constructor === Object ? null : (
+              <LeaderReport data={leaderReport} />
+            )}
+            {Object.keys(amReport).length === 0 &&
+            amReport.constructor === Object ? null : (
+              <BasicReport data={amReport} />
+            )}
           </Paper>
         </Grid>
         <Grid item xs={12} md={3} lg={3}>

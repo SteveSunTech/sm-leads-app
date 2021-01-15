@@ -401,37 +401,75 @@ const leadsStatistic = (wechats, res) => {
     });
 };
 
-// @route      Get /api/am/weeklyreport
+// @route      Get /api/am/weeklyreport/leader
 // @desc       Get president user weekly report
 // @access     private
-router.get("/weeklyreport", auth, async (req, res) => {
+router.get("/weeklyreport/leader", auth, async (req, res) => {
   try {
-    const am = await AmUser.find({});
+    const allSum = {};
+    const amSum = {};
+
     const userList = {};
-    am.forEach((item) => {
+    const am = await AmUser.find({});
+    am.forEach(async (item) => {
       userList[item._id] = item.name;
-    });
 
-    const leads = await WechatNew.find({});
+      allSum[item.name] = {};
+      allSum[item.name].total = 0;
+      allSum[item.name].thisWeek = 0;
 
-    const thisWeek = ISO8601_week_no(new Date());
+      amSum[item.name] = {};
+      item.college.forEach((co) => {
+        amSum[item.name][co.collegeDisplay] = {};
 
-    let count = 0;
-    const updated = {};
-    const check = new Promise((resolve) => {
-      leads.forEach(async (item, index, array) => {
-        if (ISO8601_week_no(item.updateDate) === thisWeek) {
-          const name = userList[item.amUser];
-          updated[name] =
-            typeof updated[name] === "number" ? updated[name] + 1 : 0;
-          count++;
-        }
-        if (index === array.length - 1) resolve();
+        amSum[item.name][co.collegeDisplay].college = co.collegeDisplay;
+        amSum[item.name][co.collegeDisplay].collegeID = co.collegeId;
+        amSum[item.name][co.collegeDisplay].total = 0;
+        amSum[item.name][co.collegeDisplay].thisWeek = 0;
       });
     });
-    check.then(() => {
-      return res.json({ updated });
+
+    // console.log(allSum);
+
+    const leads = await WechatNew.find({});
+    const thisWeek = ISO8601_week_no(new Date());
+
+    leads.forEach((item) => {
+      allSum[userList[item.amUser]].total++;
+      amSum[userList[item.amUser]][item.collegeDisplay].total++;
+
+      if (ISO8601_week_no(item.updateDate) === thisWeek) {
+        allSum[userList[item.amUser]].thisWeek++;
+        amSum[userList[item.amUser]][item.collegeDisplay].thisWeek++;
+      }
     });
+
+    const kpiAllSum = [];
+    Object.keys(allSum).forEach((item) => {
+      const newRecord = {
+        name: item,
+        thisWeek: allSum[item].thisWeek,
+        total: allSum[item].total,
+      };
+      kpiAllSum.push(newRecord);
+    });
+    kpiAllSum.sort((a, b) => b.thisWeek - a.thisWeek);
+
+    const kpiAmSum = {};
+    Object.keys(amSum).forEach((am) => {
+      kpiAmSum[am] = [];
+      Object.keys(amSum[am]).forEach((uni) => {
+        const newRecord = {
+          name: uni,
+          total: amSum[am][uni].total,
+          thisWeek: amSum[am][uni].thisWeek,
+        };
+        kpiAmSum[am].push(newRecord);
+      });
+      kpiAmSum[am].sort((a, b) => b.thisWeek - a.thisWeek);
+    });
+
+    return res.json({ kpiAllSum, kpiAmSum });
   } catch (err) {
     console.log(err);
   }
@@ -448,5 +486,46 @@ function ISO8601_week_no(dt) {
   }
   return 1 + Math.ceil((firstThursday - tdt) / 604800000);
 }
+
+// @route      Get /api/am/weeklyreport/basic
+// @desc       Get basic am user weekly report
+// @access     private
+router.get("/weeklyreport/basic", auth, async (req, res) => {
+  try {
+    const user = await AmUser.findById(req.user);
+    const allColleges = user.college;
+    const allLeads = await WechatNew.find({ amUser: req.user });
+
+    const sum = {};
+    allColleges.forEach((item) => {
+      sum[item.collegeDisplay] = {
+        thisWeek: 0,
+        total: 0,
+      };
+    });
+    const thisWeek = ISO8601_week_no(new Date());
+    allLeads.forEach((lead) => {
+      sum[lead.collegeDisplay].total++;
+      if (ISO8601_week_no(lead.updateDate) === thisWeek) {
+        sum[lead.collegeDisplay].thisWeek++;
+      }
+    });
+    const sumTable = [];
+    Object.keys(sum).forEach((item) => {
+      const newRecord = {
+        name: item,
+        total: sum[item].total,
+        thisWeek: sum[item].thisWeek,
+      };
+      sumTable.push(newRecord);
+    });
+
+    sumTable.sort((a, b) => b.thisWeek - a.thisWeek);
+
+    return res.json({ sumTable });
+  } catch (err) {
+    console.log(err);
+  }
+});
 
 module.exports = router;

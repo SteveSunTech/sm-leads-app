@@ -159,16 +159,7 @@ const Main = ({
     getAllLeads();
     getAllColleges();
     getAllProfiles();
-
-    if (user && user.presidentUser && user.presidentUser === true) {
-      getWeeklyReport();
-    }
   }, [token]);
-
-  const getWeeklyReport = async () => {
-    const userWeekly = await axios.get("/api/am/weeklyreport");
-    setWeeklyReport(userWeekly.data.updated);
-  };
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -260,7 +251,7 @@ const Main = ({
         <Container maxWidth="lg" className={classes.container}>
           <SubAlert />
           {mainComponent === "Dashboard" ? (
-            <Dashboard weeklyReport={weeklyReport} />
+            <Dashboard />
           ) : mainComponent === "College" ? (
             <div>college</div>
           ) : mainComponent === "校园大使" ? (
