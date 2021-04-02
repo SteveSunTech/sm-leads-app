@@ -51,4 +51,5 @@ const data = require("./dataModification/data");
 // data.profileGenerator();
 // data.leadsUpdateCheck();
 // data.amUserModification();
-data.kpi();
+// data.kpi();
+data.userTransfer();

@@ -431,18 +431,54 @@ router.get("/weeklyreport/leader", auth, async (req, res) => {
 
     // console.log(allSum);
 
-    const leads = await WechatNew.find({});
+    // const leads = await WechatNew.find({});
+    const Profiles = await Profile.find();
     const thisWeek = ISO8601_week_no(new Date());
 
-    leads.forEach((item) => {
-      allSum[userList[item.amUser]].total++;
-      amSum[userList[item.amUser]][item.collegeDisplay].total++;
+    // leads.forEach((item) => {
+    //   allSum[userList[item.amUser]].total++;
+    //   amSum[userList[item.amUser]][item.collegeDisplay].total++;
+
+    //   if (ISO8601_week_no(item.updateDate) === thisWeek) {
+    //     allSum[userList[item.amUser]].thisWeek++;
+    //     amSum[userList[item.amUser]][item.collegeDisplay].thisWeek++;
+    //   }
+    // });
+
+    // console.log(allSum);
+    // console.log(amSum);
+
+    Profiles.forEach((item) => {
+      allSum[userList[item.createdUserID]].total++;
+      if (amSum[userList[item.createdUserID]][item.collegeDisplay])
+        amSum[userList[item.createdUserID]][item.collegeDisplay].total++;
+
+      if (
+        item.updateDateUserID &&
+        item.updateDateUserID !== item.createdUserID
+      ) {
+        allSum[userList[item.updateDateUserID]].total++;
+        amSum[userList[item.updateDateUserID]][item.collegeDisplay].total++;
+      }
 
       if (ISO8601_week_no(item.updateDate) === thisWeek) {
-        allSum[userList[item.amUser]].thisWeek++;
-        amSum[userList[item.amUser]][item.collegeDisplay].thisWeek++;
+        allSum[userList[item.createdUserID]].thisWeek++;
+        if (amSum[userList[item.createdUserID]][item.collegeDisplay])
+          amSum[userList[item.createdUserID]][item.collegeDisplay].thisWeek++;
+
+        if (
+          item.updateDateUserID &&
+          item.updateDateUserID !== item.createdUserID
+        ) {
+          allSum[userList[item.updateDateUserID]].thisWeek++;
+          amSum[userList[item.updateDateUserID]][item.collegeDisplay]
+            .thisWeek++;
+        }
       }
     });
+
+    // console.log(allSum);
+    // console.log(amSum);
 
     const kpiAllSum = [];
     Object.keys(allSum).forEach((item) => {
@@ -494,7 +530,11 @@ router.get("/weeklyreport/basic", auth, async (req, res) => {
   try {
     const user = await AmUser.findById(req.user);
     const allColleges = user.college;
-    const allLeads = await WechatNew.find({ amUser: req.user });
+    let allLeads = await WechatNew.find({ amUser: req.user });
+    let otherWechats = await WechatNew.find({
+      "participateUser.UserID": req.user,
+    });
+    allLeads = allLeads.concat(otherWechats);
 
     const sum = {};
     allColleges.forEach((item) => {
@@ -505,9 +545,9 @@ router.get("/weeklyreport/basic", auth, async (req, res) => {
     });
     const thisWeek = ISO8601_week_no(new Date());
     allLeads.forEach((lead) => {
-      sum[lead.collegeDisplay].total++;
+      if (sum[lead.collegeDisplay]) sum[lead.collegeDisplay].total++;
       if (ISO8601_week_no(lead.updateDate) === thisWeek) {
-        sum[lead.collegeDisplay].thisWeek++;
+        if (sum[lead.collegeDisplay]) sum[lead.collegeDisplay].thisWeek++;
       }
     });
     const sumTable = [];

@@ -6,6 +6,7 @@ const date = require("../utils/Date");
 const WechatNew = require("../models/WeChatNew");
 const College = require("../models/College");
 const AmUser = require("../models/AmUser");
+const Profile = require("../models/LeadsProfile");
 
 // @route      Get api/lead/:id
 // @desc       get single lead detail by ID
@@ -82,6 +83,14 @@ router.post("/update/:id", auth, async (req, res) => {
     lead.updatedLog.push(updatedLog);
 
     await lead.save();
+
+    // Update Profile
+    const profile = await Profile.findOne({ wechatId: wechat });
+    profile.updateDateUser = user.email;
+    profile.updateDateUserID = user._id;
+    profile.updateDate = Date.now();
+    profile.updateDateDisplay = date;
+    await profile.save();
 
     res.json(lead);
   } catch (err) {

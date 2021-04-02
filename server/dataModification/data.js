@@ -200,9 +200,256 @@ function ISO8601_week_no(dt) {
   return 1 + Math.ceil((firstThursday - tdt) / 604800000);
 }
 
+const userTransfer = async () => {
+  //
+  //
+  // Bella
+  //
+  //
+  // const ucsb = await College.findOne({
+  //   name: "University of California, Santa Barbara",
+  // });
+  const bella = await AmUser.findOne({ email: "lmyang@smcovered.com" });
+  // const newucsb = {
+  //   collegeId: ucsb._id,
+  //   collegeDisplay: ucsb.name,
+  // };
+  // // console.log(newucsb);
+  // bella.college.push(newucsb);
+  // await bella.save();
+  // console.log(bella);
+
+  const bellaNeedProfile = await Profile.find({
+    college: "5f58992f1051e29cabd6e561",
+    createdUser: "zchu@smcovered.com",
+  });
+  // console.log(bellaNeedProfile);
+
+  // const processing = new Promise((resolve, reject) => {
+  //   bellaNeedProfile.forEach(async (item, index, array) => {
+  //     const addUser = {
+  //       UserID: bella._id,
+  //       UserDisplay: bella.email,
+  //     };
+  //     item.participateUser.push(addUser);
+  //     await item.save();
+
+  //     if (index === array.length - 1) resolve();
+  //   });
+  // });
+
+  // processing.then(() => console.log("finished!"));
+
+  // const bellaNeedLeads = await Lead.find({
+  //   college: "5f58992f1051e29cabd6e561",
+  //   amUserDisplay: "zchu@smcovered.com",
+  // });
+  // console.log(bellaNeedLeads.length);
+  // const processing = new Promise((resolve, reject) => {
+  //   bellaNeedLeads.forEach(async (item, index, array) => {
+  //     const addUser = {
+  //       UserID: bella._id,
+  //       UserDisplay: bella.email,
+  //     };
+  //     item.participateUser.push(addUser);
+  //     await item.save();
+
+  //     if (index === array.length - 1) resolve();
+  //   });
+  // });
+
+  // processing.then(() => console.log("finished!"));
+
+  //
+  //
+  // zhuzhu
+  //
+  //
+  const miis = await College.findOne({
+    name: "Middlebury Institute of International Studies",
+  });
+  const zhu = await AmUser.findOne({ email: "tzhu@smcovered.com" });
+  // console.log(miis);
+  // console.log(zhu);
+
+  // const newmiis = {
+  //   collegeId: miis._id,
+  //   collegeDisplay: miis.name,
+  // };
+  // zhu.college.push(newmiis);
+  // await zhu.save();
+
+  // const zhuNeedProfile = await Profile.find({
+  //   college: miis._id,
+  //   createdUser: "zchu@smcovered.com",
+  // });
+  // // console.log(zhuNeedProfile);
+
+  // const processing = new Promise((resolve, reject) => {
+  //   zhuNeedProfile.forEach(async (item, index, array) => {
+  //     const addUser = {
+  //       UserID: zhu._id,
+  //       UserDisplay: zhu.email,
+  //     };
+  //     item.participateUser = [];
+  //     item.participateUser.push(addUser);
+  //     await item.save();
+
+  //     if (index === array.length - 1) resolve();
+  //   });
+  // });
+
+  // processing.then(() => console.log("finished!"));
+
+  // const zhuNeedLeads = await Lead.find({
+  //   college: miis._id,
+  //   amUserDisplay: "zchu@smcovered.com",
+  // });
+  // console.log(zhuNeedLeads.length);
+  // const processing = new Promise((resolve, reject) => {
+  //   zhuNeedLeads.forEach(async (item, index, array) => {
+  //     const addUser = {
+  //       UserID: zhu._id,
+  //       UserDisplay: zhu.email,
+  //     };
+  //     item.participateUser = [];
+  //     item.participateUser.push(addUser);
+  //     await item.save();
+
+  //     if (index === array.length - 1) resolve();
+  //   });
+  // });
+
+  // processing.then(() => console.log("finished!"));
+
+  //
+  //
+  // hui
+  //
+  //
+  const ucsc = await College.findOne({
+    name: "University of California, Santa Cruz",
+  });
+  const hui = await AmUser.findOne({ email: "hli@smcovered.com" });
+  // console.log(ucsc);
+  // console.log(hui);
+
+  // const newucsc = {
+  //   collegeId: ucsc._id,
+  //   collegeDisplay: ucsc.name,
+  // };
+  // hui.college.push(newucsc);
+  // await hui.save();
+
+  // const huiNeedProfile = await Profile.find({
+  //   college: ucsc._id,
+  //   createdUser: "zchu@smcovered.com",
+  // });
+  // console.log(huiNeedProfile.length);
+
+  // const processing = new Promise((resolve, reject) => {
+  //   huiNeedProfile.forEach(async (item, index, array) => {
+  //     const addUser = {
+  //       UserID: hui._id,
+  //       UserDisplay: hui.email,
+  //     };
+  //     item.participateUser = [];
+  //     item.participateUser.push(addUser);
+  //     await item.save();
+
+  //     if (index === array.length - 1) resolve();
+  //   });
+  // });
+  // processing.then(() => console.log("finished!"));
+
+  // const huiNeedLeads = await Lead.find({
+  //   college: ucsc._id,
+  //   amUserDisplay: "zchu@smcovered.com",
+  // });
+  // console.log(huiNeedLeads.length);
+
+  // const processing = new Promise((resolve, reject) => {
+  //   huiNeedLeads.forEach(async (item, index, array) => {
+  //     const addUser = {
+  //       UserID: hui._id,
+  //       UserDisplay: hui.email,
+  //     };
+  //     item.participateUser = [];
+  //     item.participateUser.push(addUser);
+  //     await item.save();
+
+  //     if (index === array.length - 1) resolve();
+  //   });
+  // });
+  // processing.then(() => console.log("finished!"));
+
+  //
+  //
+  // shaozhen
+  //
+  //
+  const stanford = await College.findOne({
+    name: "Stanford University",
+  });
+  const sz = await AmUser.findOne({ email: "szjin@smcovered.com" });
+  // console.log(stanford);
+  // console.log(sz);
+
+  // const newstanford = {
+  //   collegeId: stanford._id,
+  //   collegeDisplay: stanford.name,
+  // };
+  // sz.college.push(newstanford);
+  // await sz.save();
+  // console.log(sz);
+
+  // const szNeedProfile = await Profile.find({
+  //   college: stanford._id,
+  //   createdUser: "zchu@smcovered.com",
+  // });
+  // console.log(szNeedProfile.length);
+
+  // const processing = new Promise((resolve, reject) => {
+  //   szNeedProfile.forEach(async (item, index, array) => {
+  //     const addUser = {
+  //       UserID: sz._id,
+  //       UserDisplay: sz.email,
+  //     };
+  //     item.participateUser = [];
+  //     item.participateUser.push(addUser);
+  //     await item.save();
+
+  //     if (index === array.length - 1) resolve();
+  //   });
+  // });
+  // processing.then(() => console.log("finished!"));
+
+  // const szNeedLeads = await Lead.find({
+  //   college: stanford._id,
+  //   amUserDisplay: "zchu@smcovered.com",
+  // });
+  // console.log(szNeedLeads.length);
+
+  // const processing = new Promise((resolve, reject) => {
+  //   szNeedLeads.forEach(async (item, index, array) => {
+  //     const addUser = {
+  //       UserID: sz._id,
+  //       UserDisplay: sz.email,
+  //     };
+  //     item.participateUser = [];
+  //     item.participateUser.push(addUser);
+  //     await item.save();
+
+  //     if (index === array.length - 1) resolve();
+  //   });
+  // });
+  // processing.then(() => console.log("finished!"));
+};
+
 module.exports = {
   profileGenerator,
   leadsUpdateCheck,
   amUserModification,
   kpi,
+  userTransfer,
 };
