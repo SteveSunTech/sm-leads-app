@@ -52,4 +52,5 @@ const data = require("./dataModification/data");
 // data.leadsUpdateCheck();
 // data.amUserModification();
 // data.kpi();
-data.userTransfer();
+// data.userTransfer();
+// data.newAmUser();

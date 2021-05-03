@@ -107,16 +107,14 @@ router.post("/user/college/assign", auth, async (req, res) => {
   try {
     // console.log(req.body);
     const collegeDisplay = req.body.college;
+    console.log(collegeDisplay);
     const email = req.body.email;
-
     const college = await College.findOne({ name: collegeDisplay });
+    console.log(college);
     const collegeId = college._id;
     const user = await AmUser.findOne({ email }).select("-password");
-
     user.college.unshift({ collegeId, collegeDisplay });
-
     await user.save();
-
     return res.json({ user });
   } catch (error) {
     console.log(error);

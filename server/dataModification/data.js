@@ -3,6 +3,7 @@ const Profile = require("../models/LeadsProfile");
 const AmUser = require("../models/AmUser");
 const College = require("../models/College");
 const date = require("../utils/Date");
+const bcrypt = require("bcryptjs");
 
 const profileGenerator = async () => {
   try {
@@ -446,10 +447,31 @@ const userTransfer = async () => {
   // processing.then(() => console.log("finished!"));
 };
 
+// New am user
+const newAmUser = async () => {
+  const password = "test123123";
+
+  let user = new AmUser({
+    name: "Jie xu",
+    email: "jxu@smcovered.com",
+    password,
+    dateDisplay: date,
+    status: true,
+    area: "Middle",
+  });
+  const salt = await bcrypt.genSalt(10);
+  user.password = await bcrypt.hash(password, salt);
+
+  await user.save();
+
+  console.log(user);
+};
+
 module.exports = {
-  profileGenerator,
-  leadsUpdateCheck,
-  amUserModification,
-  kpi,
-  userTransfer,
+  // profileGenerator,
+  // leadsUpdateCheck,
+  // amUserModification,
+  // kpi,
+  // userTransfer,
+  // newAmUser,
 };

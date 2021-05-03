@@ -112,11 +112,15 @@ const UserDetail = ({
 
   // handle assign college
   const handleAssignCollege = (email) => {
+    // console.log(email);
+
     const processing = new Promise((resolve, reject) => {
       userDisplay.college.forEach((item, index, array) => {
         if (item.collegeDisplay === assignCollege) resolve(false);
         if (index === array.length - 1) resolve(true);
       });
+
+      if (userDisplay.college.length === 0) resolve(true);
     });
     processing.then((res) => {
       if (res) {
@@ -225,7 +229,10 @@ const UserDetail = ({
                 id="CollegeList"
                 options={allColleges}
                 getOptionLabel={(option) => option.name}
-                onChange={(event, value) => setAssignCollege(value.name)}
+                onChange={(event, value = {}) => {
+                  console.log("value", value);
+                  typeof value === "object" && setAssignCollege(value.name);
+                }}
                 renderInput={(params) => (
                   <TextField
                     {...params}

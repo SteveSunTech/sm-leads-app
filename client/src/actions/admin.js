@@ -120,6 +120,8 @@ export const AssignCollegeToUser = (email, college) => async (dispatch) => {
 
   const body = JSON.stringify({ email, college });
 
+  console.log(body);
+
   try {
     let payload;
     const res = axios.post("/api/admin/user/college/assign", body, config);
